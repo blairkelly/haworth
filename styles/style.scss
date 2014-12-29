@@ -6,10 +6,14 @@
 
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
+
+    -webkit-transform: transale3d(0,0,0); 
+    transform: transale3d(0,0,0); 
 }
 
 body {
     color: #fff;
+    font-size: 16px;
     height: 100%;
     width: 100%;
 }
@@ -22,11 +26,53 @@ body {
 }
 
 .thought_bubble {
+    
+
     position: absolute;
     top: 0;
     left: 0;
+    opacity: 0;
 
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+
+    &.transitions {
+        @include basic-transition( opacity 2.7s );
+    }
+    &.showing {
+        opacity: 1;
+    }
+
+    .note {
+        position: absolute;
+        top: 10px;
+    }
+    &.buffer {
+        .note {
+            left: 10px;
+        }
+    }
+    &.main {
+        .note {
+            right: 10px;
+        }
+    }
+}
+
+
+.t_tests {
+    // -webkit-transition: background-color 2s; /* For Safari 3.1 to 6.0 */
+    //transition: background-color 2s;
+    @include basic-transition( background-color 2s linear );
+
+    background-color: #666;
+    color: #f0f;
+    text-align: center;
+    padding: 100px;
+
+    &:hover {
+        background-color: #111;
+        color: #fff;
+    }
 }
