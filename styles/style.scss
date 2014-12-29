@@ -1,17 +1,31 @@
-body {
-	background: #000;
-    color: #fff;
+@mixin basic-transition($property) {
+    -webkit-transition: $property;
+    -moz-transition: $property;
+    -o-transition: $property;
+    transition: $property;
 
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+}
+
+body {
+    color: #fff;
     height: 100%;
     width: 100%;
 }
 
 .supercontainer {
+    background: #000;
     width: 100%;
     height: 100%;
+    position: relative;
 }
 
 .thought_bubble {
+    position: absolute;
+    top: 0;
+    left: 0;
+
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
