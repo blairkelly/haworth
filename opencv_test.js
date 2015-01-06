@@ -80,7 +80,7 @@ var watchWebcamAndDetectFaces = function () {
     
     do_it();
 }
-watchWebcamAndDetectFaces();
+//watchWebcamAndDetectFaces();
 
 
 var notifyWhenFace = function () {

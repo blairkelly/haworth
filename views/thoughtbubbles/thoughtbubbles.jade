@@ -1,0 +1,13 @@
+extends ../../layouts/main
+
+block body
+    .surface.thought_bubble.buffer(style="background-image: url(/images/1.jpg);")
+        .note buffer
+    .surface.thought_bubble.main(style="background-image: url(/images/1.jpg);")
+        .note main
+
+block pagespecific_scripts
+    script(type="text/javascript")
+        include scripts.js
+    script(type="text/javascript")
+        include comms.js

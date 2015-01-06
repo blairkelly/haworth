@@ -1,5 +1,7 @@
 //Haworth Design Offsite
 
+var config = require('./config');
+
 var path = require('path');
 var find = require('find');  //was specified for route, but not in registry.
 var http = require('http');
@@ -7,6 +9,8 @@ var express = require('express');
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var io = require('socket.io')();
+var cv = require('opencv');
+var fs = require('fs');
 
 var app = express();           // start Express framework
 
@@ -30,9 +34,12 @@ server.listen(process.env.PORT || 3000);
 module.exports = {
     app: app,
     io: io,
+    cv: cv,
+    config: config,
 };
 
 //routes
+require('./routes/general_comms');
 require('./routes/style');
 find.fileSync('route.js', __dirname + '/views').forEach(function (route_file) {  //-     /\.js$/
     require(route_file);
