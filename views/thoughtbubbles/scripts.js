@@ -1,4 +1,3 @@
-
 var hide_thoughtbubbles = function (cb) {
     $('.thought_bubble').removeClass('showing');
 

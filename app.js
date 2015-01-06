@@ -33,6 +33,7 @@ server.listen(process.env.PORT || 3000);
 
 module.exports = {
     app: app,
+    fs: fs,
     io: io,
     cv: cv,
     config: config,
