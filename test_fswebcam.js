@@ -9,7 +9,7 @@ function takeShot(device) {
             '--resolution', '800x480', 
             '--rotate', '90',
             '--jpeg', '95', 
-            '--save', shots_path + filename
+            '--save', filename
         ]);
  
     // Log fswebcam output.
