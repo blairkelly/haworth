@@ -6,9 +6,7 @@ function takeShot(device) {
         fswebcam = spawn('fswebcam', [
             '--device', '/dev/' + device, 
             '--no-banner', 
-            '--resolution', '800x480', 
-            '--rotate', '90',
-            '--jpeg', '95', 
+            '--jpeg', '100', 
             '--save', filename
         ]);
  
