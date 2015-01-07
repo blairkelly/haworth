@@ -35,7 +35,6 @@ var testFaceDetection = function () {
 
 
 var watchWebcam = function () {
-    console.log('hello');
     var camera = new cv.VideoCapture(1);
     var window = new cv.NamedWindow('Video', 0)
 

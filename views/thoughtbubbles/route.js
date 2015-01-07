@@ -5,11 +5,13 @@ var fs = module.parent.exports.fs;
 var cv = module.parent.exports.cv;
 
 var debounce_count = 0;
-var debounce_ceiling = 3;
+var debounce_ceiling = 2;
 var thoughtbubble_showing = false;
-var looking_for_faces = false;
 var current_thoughtbubble = '';
+
 var currentSocket = null;
+
+var camera = new cv.VideoCapture(0);
 
 app.get('/thoughtbubbles', function (req, res) {
     res.render('thoughtbubbles/thoughtbubbles.jade');
@@ -25,66 +27,61 @@ var random_thoughtbubble = function () {
     return current_thoughtbubble = tb;
 }
 
-var notifyWhenFace = function () {
-    var camera = new cv.VideoCapture(0);
+var touchokay = true;
+var watchCameraForFaces = function () {
+    camera.read(function(err, im) {
+        if (err) throw err;
+        im.detectObject(cv.FACE_CASCADE, {}, function (err, faces) {
+            if (touchokay) {
+                if (!thoughtbubble_showing) {
+                    if (faces.length > 0) {
+                        debounce_count++;
 
-    var do_it = function () {
-        camera.read(function(err, im) {
-            if (err) throw err;
-
-            im.detectObject(cv.FACE_CASCADE, {}, function (err, faces) {
-                if(currentSocket) {
-                    if (!thoughtbubble_showing) {
-                        if (faces.length > 0) {
-                            debounce_count++;
-
-                            if (debounce_count == debounce_ceiling) {
-                                var rt = random_thoughtbubble();
-                                console.log(rt);
+                        if (debounce_count == debounce_ceiling) {
+                            var rt = random_thoughtbubble();
+                            console.log(rt);
+                            if (currentSocket) {
                                 currentSocket.emit('setimg', rt);
-                                thoughtbubble_showing = true;
-                                debounce_count = 0;
                             }
-                        } else {
+                            //io.sockets.emit('setimg', rt);
+                            touchokay = false;
+                            thoughtbubble_showing = true;
                             debounce_count = 0;
                         }
                     } else {
-                        if (!faces.length) {
-                            debounce_count++;
-                            if (debounce_count == debounce_ceiling) {
+                        debounce_count = 0;
+                    }
+                } else {
+                    if (!faces.length) {
+                        debounce_count++;
+                        if (debounce_count == debounce_ceiling) {
+                            console.log("HIDE thoughts");
+                            if (currentSocket) {
                                 currentSocket.emit('hidethoughts', true);
-                                thoughtbubble_showing = false;
-                                debounce_count = 0;
                             }
-                        } else {
+                            //io.sockets.emit('hidethoughts', true);
+                            thoughtbubble_showing = false;
+                            touchokay = false;
                             debounce_count = 0;
                         }
+                    } else {
+                        debounce_count = 0;
                     }
                 }
-
-                setTimeout(function () {
-                    if (looking_for_faces) {
-                        do_it();
-                    }
-                }, 50);
-            });
+            }
+            setTimeout(function () {
+                watchCameraForFaces();
+            }, 160);
         });
-    }
-    
-    do_it();
+    });
 }
+watchCameraForFaces();
 
 io.on('connection', function(socket) {
     socket.on('thoughtbubbles', function (data) {
         console.log("Thoughtbubbles connected...");
-        
         currentSocket = socket;
-
-        if (!looking_for_faces) {
-            looking_for_faces = true;
-            notifyWhenFace();
-        }
-
+        
         /*
         setTimeout(function () {
             var rt = random_thoughtbubble();
@@ -99,15 +96,24 @@ io.on('connection', function(socket) {
             //setTimeout(function () {
             //    socket.emit('hidethoughts', true);
             //}, 3000);
+
+            setTimeout(function () {
+                touchokay = true;
+                console.log("Touch ok again.")
+            }, 5000);
         });
 
         socket.on('donehide', function (data) {
             console.log('Done Hide');
+            setTimeout(function () {
+                touchokay = true;
+                console.log("Touch ok again.")
+            }, 3000);
         });
 
         socket.on('disconnect', function () {
-            currentSocket = null;
             console.log('thoughtbubbles disconnected');
+            currentSocket = null;
         });
     });
 });
