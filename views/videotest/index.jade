@@ -1,0 +1,12 @@
+extends ../../layouts/main
+
+block body
+    .surface.video.showing(style="background-image: url(/images/2.jpg);")
+        .note videotest
+        .video_holder
+            video(id="hawvid", width="720", height="480", autoplay)
+                source(src="/videos/tulips_3.mp4", type="video/mp4")
+
+block pagespecific_scripts
+    script(type="text/javascript")
+        include scripts.js

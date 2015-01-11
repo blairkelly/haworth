@@ -11,9 +11,17 @@ var current_thoughtbubble = '';
 
 var currentSocket = null;
 
-var camera = new cv.VideoCapture(0);
+var currentlyWatching = false;
+
+var camera = null;
+var currentlyWatching = false;
 
 app.get('/thoughtbubbles', function (req, res) {
+    if (!currentlyWatching) {
+        camera = new cv.VideoCapture(0);
+        currentlyWatching = true;
+        watchCameraForFaces();
+    }
     res.render('thoughtbubbles/thoughtbubbles.jade');
 });
 
@@ -75,7 +83,6 @@ var watchCameraForFaces = function () {
         });
     });
 }
-watchCameraForFaces();
 
 io.on('connection', function(socket) {
     socket.on('thoughtbubbles', function (data) {
@@ -100,7 +107,7 @@ io.on('connection', function(socket) {
             setTimeout(function () {
                 touchokay = true;
                 console.log("Touch ok again.")
-            }, 5000);
+            }, 1000);
         });
 
         socket.on('donehide', function (data) {
@@ -108,7 +115,7 @@ io.on('connection', function(socket) {
             setTimeout(function () {
                 touchokay = true;
                 console.log("Touch ok again.")
-            }, 3000);
+            }, 1000);
         });
 
         socket.on('disconnect', function () {

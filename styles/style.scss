@@ -44,7 +44,7 @@ body {
     background-size: cover;
 
     &.transitions {
-        @include basic-transition( opacity 2.7s );
+        @include basic-transition( opacity 1.7s );
     }
     &.showing {
         opacity: 1;
