@@ -1,3 +1,5 @@
+var socket = io.connect('//'+window.location.hostname+':'+window.location.port);
+
 var img_transition_time = 3200;
 
 var on_window_resize = function () {

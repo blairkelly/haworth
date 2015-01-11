@@ -1,5 +1,4 @@
 //comms
-var socket = io.connect('//'+window.location.hostname+':'+window.location.port);
 
 var add_socket_listeners = function () {
     socket.on('welcome', function (data) {
@@ -37,4 +36,3 @@ var add_socket_listeners = function () {
 socket.on('connect', function () {
     add_socket_listeners();
 });
-

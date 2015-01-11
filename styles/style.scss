@@ -11,6 +11,10 @@
     transform: transale3d(0,0,0); 
 }
 
+*, *:before, *:after {
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
 body {
     color: #fff;
     font-size: 16px;
@@ -78,8 +82,22 @@ body {
             right: 10px;
         }
     }
+    &.loopinggif {
+        background-size: contain;
+        background-color: #010101;
+    }
+
+    &.admin_panel {
+        font-size: 1.2em;
+        color: #333;
+        padding: 15px;
+    }
 }
 
+.button {
+    cursor: pointer;
+    display: inline-block;
+}
 
 .t_tests {
     // -webkit-transition: background-color 2s; /* For Safari 3.1 to 6.0 */
