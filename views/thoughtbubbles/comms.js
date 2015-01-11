@@ -13,6 +13,9 @@ var add_socket_listeners = function () {
             socket.emit('doneload', true);
         });
     });
+    socket.on('showthoughts', function (data) {
+        show_thoughtbubbles();
+    });
     socket.on('hidethoughts', function (data) {
         hide_thoughtbubbles(function () {
             socket.emit('donehide', true);

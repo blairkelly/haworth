@@ -9,7 +9,6 @@ var express = require('express');
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var io = require('socket.io')();
-var cv = require('opencv');
 var fs = require('fs');
 
 var app = express();           // start Express framework
@@ -35,7 +34,6 @@ module.exports = {
     app: app,
     fs: fs,
     io: io,
-    cv: cv,
     config: config,
 };
 

@@ -20,10 +20,12 @@ var load_thoughtbubble = function (thoughtbubble_imgname, cb) {
     setTimeout(function () {
         $('<img/>').attr('src', imgpath).load(function() {
             var timg = $(this);
+
+            $('.thought_bubble').addClass('transitions');
             $('.thought_bubble.main').css('background-image', 'url('+imgpath+')').addClass('transitions').addClass('showing');
             
             setTimeout(function () {
-                $('.thought_bubble.buffer').css('background-image', 'url('+imgpath+')');
+                $('.thought_bubble.buffer').css('background-image', 'url('+imgpath+')').addClass('showing');
                 timg.remove();
                 cb();
             }, img_transition_time);

@@ -16,6 +16,10 @@ body {
     font-size: 16px;
     height: 100%;
     width: 100%;
+
+    font-family: 'Open Sans' !important;
+    font-style: normal;
+    font-weight: 400;
 }
 
 .supercontainer {
@@ -54,6 +58,8 @@ body {
         display: none;
         position: absolute;
         top: 10px;
+        font-weight: 600;
+        font-size: 40px;
     }
     &.bg {
         background-color: #fff;
