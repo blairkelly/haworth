@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var io = require('socket.io')();
 var fs = require('fs');
+var serialcoms = require('./modules/serialcoms');
 
 var app = express();           // start Express framework
 
@@ -35,6 +36,7 @@ module.exports = {
     fs: fs,
     io: io,
     config: config,
+    serialcoms: serialcoms
 };
 
 //routes
