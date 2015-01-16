@@ -118,35 +118,47 @@ sport.on("open", function () {
             params[pieces[0]] = pieces[1];
         }
 
-        if (params.f0 > fs_profiles[0].t0) {
-            bubbles[0].buttgone = null;
-            if (!bubbles[0].buttseen) {
-                bubbles[0].buttseen = moment();
+        for (var b = 0; b < bubbles.length; b++) {
+            var sensor_ids = [];
+            if (b==0) {
+                sensor_ids.push('f0');
+                sensor_ids.push('f1');
             }
-            if (!bubbles[0].buttplanted) {
-                var tdiff = now.diff(bubbles[0].buttseen);
-                if (tdiff > butt_on_delay) {
-                    bubbles[0].buttplanted = true;
-                    bubbles[0].current_thoughtbubble = random_thoughtbubble(bubbles[0]);
-                    emit_to_bubble(0, function (socket) {
-                        console.log("SET IMG");
-                        socket.emit('setimg', bubbles[0].current_thoughtbubble);
-                    });
+            else if (b==1) {
+                sensor_ids.push('f2');
+                sensor_ids.push('f3');
+            }
+
+            if ((params[sensor_ids[0]] > fs_profiles[b].t0) || (params[sensor_ids[1]] > fs_profiles[b].t1)) {
+                bubbles[b].buttgone = null;
+                if (!bubbles[b].buttseen) {
+                    bubbles[b].buttseen = moment();
+                }
+                if (!bubbles[b].buttplanted) {
+                    var tdiff = now.diff(bubbles[b].buttseen);
+                    if (tdiff > butt_on_delay) {
+                        bubbles[b].buttplanted = true;
+                        bubbles[b].current_thoughtbubble = random_thoughtbubble(bubbles[b]);
+                        emit_to_bubble(0, function (socket) {
+                            console.log("SET IMG");
+                            socket.emit('setimg', bubbles[b].current_thoughtbubble);
+                        });
+                    }
                 }
             }
-        }
-        else {
-            bubbles[0].buttseen = null;
-            if (!bubbles[0].buttgone) {
-                bubbles[0].buttgone = moment();
-            }
-            if (bubbles[0].buttplanted) {
-                var tdiff = now.diff(bubbles[0].buttgone);
-                if ((tdiff > butt_gone_delay) && bubbles[0].buttplanted) {
-                    bubbles[0].buttplanted = false;
-                    emit_to_bubble(0, function (socket) {
-                        socket.emit('hidethoughts', true);
-                    });
+            else {
+                bubbles[b].buttseen = null;
+                if (!bubbles[b].buttgone) {
+                    bubbles[b].buttgone = moment();
+                }
+                if (bubbles[b].buttplanted) {
+                    var tdiff = now.diff(bubbles[b].buttgone);
+                    if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
+                        bubbles[b].buttplanted = false;
+                        emit_to_bubble(0, function (socket) {
+                            socket.emit('hidethoughts', true);
+                        });
+                    }
                 }
             }
         }
