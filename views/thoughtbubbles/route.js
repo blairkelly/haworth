@@ -19,7 +19,7 @@ var tbs = [
     {
         id: 0,
         current_thoughtbubble: '',
-        thresh1: 500,
+        thresh1: 890,
     },
     {
         id: 1,
