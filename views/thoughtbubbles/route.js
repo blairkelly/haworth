@@ -12,20 +12,16 @@ var moment = module.parent.exports.moment;
 var butt_on_delay = 160;
 var butt_gone_delay = 320;
 
-var thought_min_displaytime = 2700;
 var cycle_time = 5555;
 
-var tbs = [
-    {
-        id: 0,
-        current_thoughtbubble: '',
-        thresh1: 890,
-    },
-    {
-        id: 1,
-        current_thoughtbubble: ''
-    },
-]
+var fs_profiles = [
+    {t0: 400, t1: 400},
+    {t0: 400, t1: 400}
+];
+var bubbles = [
+    {},
+    {}
+];
 
 app.get('/thoughtbubbles', function (req, res) {
     res.send("specify a thought bubble id. /0 or /1");
@@ -33,7 +29,7 @@ app.get('/thoughtbubbles', function (req, res) {
 
 app.get('/thoughtbubbles/:id', function (req, res) {
     var id = parseInt(req.params.id, 10);
-    if (id == 0 || id == 1) {
+    if (id < 2) {
         console.log("Thoughtbubble requested: " + id);
         res.locals.thoughtbubble_id = id;
         res.render('thoughtbubbles/thoughtbubbles.jade');
@@ -59,63 +55,51 @@ io.on('connection', function(socket) {
 
         if (data.id == 0) {
             console.log("TB ONE");
-            tbs[0].socket = socket;
-            socket.tb = tbs[0];
+            socket.bubble = {
+                id: 0,
+                current_thoughtbubble: '',
+            };
         } else if (data.id == 1) {
             console.log("TB TWO");
-            tbs[1].socket = socket;
-            socket.tb = tbs[1];
+            socket.bubble = {
+                id: 1,
+                current_thoughtbubble: '',
+            };
         }
-
-        //socket.emit('showthoughts', true);
-        
-        //setTimeout(function () {
-        //    var rt = random_thoughtbubble();
-        //    console.log(rt);
-        //    socket.emit('setimg', rt);
-        //}, 1000);
-        
-
-        /*
-        setTimeout(function () {
-            //var rt = random_thoughtbubble();
-            //console.log(rt);
-            //socket.emit('setimg', rt);
-            socket.emit('showthoughts', true);
-
-            setTimeout(function () {
-                var rt = random_thoughtbubble();
-                console.log(rt);
-                socket.emit('setimg', rt);
-            }, 7000);
-        }, 5000);
-        */
 
         socket.on('doneload', function (data) {
             console.log('Done Load');
-            socket.tb.image_displayed = moment();
+
+            /*
             setTimeout(function () {
-                if (socket.tb.buttplanted) {
-                    socket.tb.current_thoughtbubble = random_thoughtbubble(socket.tb);
-                    console.log("Sending to tbs[" + socket.tb.id + "]: " + socket.tb.current_thoughtbubble);
-                    socket.tb.socket.emit('setimg', socket.tb.current_thoughtbubble);
+                if (socket.bubble.buttplanted) {
+                    socket.bubble.current_thoughtbubble = random_thoughtbubble(socket.bubble);
+                    console.log("Sending to bubbles[" + socket.bubble.id + "]: " + socket.bubble.current_thoughtbubble);
+                    socket.bubble.emit('setimg', socket.bubble.current_thoughtbubble);
                 }
             }, cycle_time);
+            */
         });
 
         socket.on('donehide', function (data) {
             console.log('Done Hide');
-            socket.tb.image_displayed = null;
         });
 
         socket.on('disconnect', function () {
-            socket.tb.socket = null;
-            console.log('thoughtbubbles disconnected');
+            //bubble popped
+            console.log('bubble popped');
         });
     });
 });
 
-
+var emit_to_bubble = function (bubble_id, callback) {
+    var sockets = io.sockets.connected;
+    for (var key in sockets) { 
+        if (sockets[key].bubble && sockets[key].bubble.id == bubble_id) {
+            callback(sockets[key]);
+        }
+    }
+}
 
 sport.on("open", function () {
     var message = null;
@@ -133,34 +117,35 @@ sport.on("open", function () {
             params[pieces[0]] = pieces[1];
         }
 
-        if (tbs[0].socket) {
-            if (params.f0 > tbs[0].thresh1) {
-                tbs[0].buttgone = null;
-                if (!tbs[0].buttseen) {
-                    tbs[0].buttseen = moment();
-                }
-                if (!tbs[0].buttplanted) {
-                    var tdiff = now.diff(tbs[0].buttseen);
-                    if (tdiff > butt_on_delay) {
-                        tbs[0].buttplanted = true;
-                        tbs[0].current_thoughtbubble = random_thoughtbubble(tbs[0]);
-                        console.log("Sending to tbs[0]: " + tbs[0].current_thoughtbubble);
-                        tbs[0].socket.emit('setimg', tbs[0].current_thoughtbubble);
-                    }
+        if (params.f0 > fs_profiles[0].t0) {
+            bubbles[0].buttgone = null;
+            if (!bubbles[0].buttseen) {
+                bubbles[0].buttseen = moment();
+            }
+            if (!bubbles[0].buttplanted) {
+                var tdiff = now.diff(bubbles[0].buttseen);
+                if (tdiff > butt_on_delay) {
+                    bubbles[0].buttplanted = true;
+                    bubbles[0].current_thoughtbubble = random_thoughtbubble(bubbles[0]);
+                    emit_to_bubble(0, function (socket) {
+                        console.log("SET IMG");
+                        socket.emit('setimg', bubbles[0].current_thoughtbubble);
+                    });
                 }
             }
-            else {
-                tbs[0].buttseen = null;
-                if (!tbs[0].buttgone) {
-                    tbs[0].buttgone = moment();
-                }
-                if (tbs[0].buttplanted && tbs[0].image_displayed) {
-                    var tdiff = now.diff(tbs[0].buttgone);
-                    var idiff = now.diff(tbs[0].image_displayed);
-                    if ((tdiff > butt_gone_delay) && tbs[0].buttplanted && (idiff > thought_min_displaytime)) {
-                        tbs[0].buttplanted = false;
-                        tbs[0].socket.emit('hidethoughts', true);
-                    }
+        }
+        else {
+            bubbles[0].buttseen = null;
+            if (!bubbles[0].buttgone) {
+                bubbles[0].buttgone = moment();
+            }
+            if (bubbles[0].buttplanted) {
+                var tdiff = now.diff(bubbles[0].buttgone);
+                if ((tdiff > butt_gone_delay) && bubbles[0].buttplanted) {
+                    bubbles[0].buttplanted = false;
+                    emit_to_bubble(0, function (socket) {
+                        socket.emit('hidethoughts', true);
+                    });
                 }
             }
         }
