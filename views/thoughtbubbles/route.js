@@ -10,7 +10,7 @@ var moment = module.parent.exports.moment;
 //var current_thoughtbubble = '';
 
 var butt_on_delay = 160;
-var butt_gone_delay = 320;
+var butt_gone_delay = 720;
 
 var cycle_time = 5555;
 
@@ -18,6 +18,7 @@ var fs_profiles = [
     {t0: 400, t1: 400},
     {t0: 400, t1: 400}
 ];
+
 var bubbles = [
     {},
     {}

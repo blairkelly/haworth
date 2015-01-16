@@ -3,6 +3,7 @@ var min_display_time = 2000;
 var in_transition = false;
 var cmds = [];
 var next_cmd_ok = true;
+var can_add = true;
 
 var thoughtbubble_id = parseInt($('#tb_id').data('thoughtbubble_id'), 10);
 console.log("thoughtbubble_id: " + thoughtbubble_id);
@@ -44,31 +45,37 @@ var add_socket_listeners = function () {
     socket.emit('thoughtbubbles', {id: thoughtbubble_id});
 
     socket.on('setimg', function (imgname) {
-        cmds.push({
-            func: load_thoughtbubble,
-            params: {
-                imgname: imgname,
-                callback: function () {
-                    socket.emit('doneload', true);
-                    setTimeout(function () {
-                        next_cmd_ok = true;
-                    }, min_display_time);
+        if (can_add) {
+            cmds.push({
+                func: load_thoughtbubble,
+                params: {
+                    imgname: imgname,
+                    callback: function () {
+                        socket.emit('doneload', true);
+                        setTimeout(function () {
+                            next_cmd_ok = true;
+                        }, min_display_time);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
     socket.on('hidethoughts', function (data) {
-        cmds.push({
-            func: hide_thoughtbubbles,
-            params: {
-                callback: function () {
-                    socket.emit('donehide', true);
-                    setTimeout(function () {
-                        next_cmd_ok = true;
-                    }, 500);
+        if (can_add) {
+            can_add = false;
+            cmds.push({
+                func: hide_thoughtbubbles,
+                params: {
+                    callback: function () {
+                        socket.emit('donehide', true);
+                        setTimeout(function () {
+                            next_cmd_ok = true;
+                            can_add = true;
+                        }, 500);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
     socket.on('refresh', function (data) {
         window.location.reload();
