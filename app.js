@@ -11,6 +11,7 @@ var session = require('express-session')
 var io = require('socket.io')();
 var fs = require('fs');
 var serialcoms = require('./modules/serialcoms');
+var moment = require('moment');
 
 var app = express();           // start Express framework
 
@@ -36,7 +37,8 @@ module.exports = {
     fs: fs,
     io: io,
     config: config,
-    serialcoms: serialcoms
+    serialcoms: serialcoms,
+    moment: moment,
 };
 
 //routes

@@ -5,7 +5,7 @@ var add_socket_listeners = function () {
         console.log(data.message);
     });
     
-    socket.emit('thoughtbubbles', true);
+    socket.emit('thoughtbubbles', {id: thoughtbubble_id});
 
     socket.on('setimg', function (imgname) {
         load_thoughtbubble(imgname, function () {

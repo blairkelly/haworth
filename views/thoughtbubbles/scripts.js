@@ -1,3 +1,7 @@
+var showing = false;
+var thoughtbubble_id = parseInt($('#tb_id').data('thoughtbubble_id'), 10);
+console.log("thoughtbubble_id: " + thoughtbubble_id);
+
 var hide_thoughtbubbles = function (cb) {
     $('.thought_bubble').removeClass('showing');
 

@@ -26,11 +26,13 @@ void addtosbuffer (String param, String value) {
 
 void delegate(String cmd, int cmdval) {
     if (cmd.equals("p")) {
-        
-    }
-
-    if (cmd.equals("d")) {
-        
+        if (cmdval == 0) {
+            digitalWrite(7, HIGH); //off
+            addtosbuffer("powerswitchtail", "0");
+        } else if (cmdval == 1) {
+            digitalWrite(7, LOW); //ON
+            addtosbuffer("powerswitchtail", "1");
+        }
     }
 }
 
@@ -73,21 +75,17 @@ void serialListen()
 void readSensors()
 {
     int reading = 0;
-
-    for (int i = 0; i < 4; ++i) {
-        int s_reading = analogRead(1);
-        if (s_reading < 100 || s_reading > 1024) {
-            //no good
-            i--;
+    String pin_name = "";
+    for (int f_pin = 0; f_pin < 4; f_pin++) {
+        reading = 0;
+        pin_name = "f" + String( f_pin );
+        for (int i = 0; i < 4; ++i) {
+            reading += analogRead(f_pin);
+            delay(3);
         }
-        else {
-            reading += s_reading;
-        }
-        delay(2);
+        addtosbuffer(pin_name, String( reading / 4 ));
     }
-
-    addtosbuffer("f1", String( reading / 4 ));
-    delay(200);
+    delay(100);
 }
 
 void loop() {             //This function loops while the arduino is powered

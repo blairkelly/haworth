@@ -15,5 +15,8 @@ serialcoms.new_serialport = function () {
     });
 }
 
+console.log("Opening serialport...");
+serialcoms.connectedport = serialcoms.new_serialport();
+
 //needed to export
 module.exports = serialcoms;
