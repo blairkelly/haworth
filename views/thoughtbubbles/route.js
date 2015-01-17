@@ -15,7 +15,7 @@ var butt_gone_delay = 720;
 var cycle_time = 5555;
 
 var fs_profiles = [
-    {t0: 400, t1: 400},
+    {t0: 890, t1: 890},
     {t0: 400, t1: 400}
 ];
 
