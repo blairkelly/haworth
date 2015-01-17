@@ -18,7 +18,7 @@ var hide_thoughtbubbles = function (params) {
 }
 
 var load_thoughtbubble = function (params) {
-    var imgpath = '/images/' + params.imgname;
+    var imgpath = '/images/thoughtbubbles/' + params.imgname;
     $('.thought_bubble.main').removeClass('transitions showing');
 
     setTimeout(function () {

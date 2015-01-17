@@ -1,9 +1,10 @@
 var config = {}
 
 config.thoughtbubbles = [
-    '1.jpg',
-    '2.jpg',
-    '3.jpg',
+    'todotb_001.png',
+    'todotb_002.png',
+    'todotb_003.png',
+    'todotb_004.png',
 ];
 
 config.serialaddress = "/dev/tty.usbmodem1481";
