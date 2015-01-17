@@ -5,6 +5,7 @@ config.thoughtbubbles = [
     'todotb-002.png',
     'todotb-003.png',
     'todotb-004.png',
+    'todotb-005.png',
 ];
 
 config.serialaddress = "/dev/tty.usbmodem1481";

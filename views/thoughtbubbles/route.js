@@ -15,8 +15,8 @@ var butt_gone_delay = 720;
 var cycle_time = 5555;
 
 var fs_profiles = [
-    {t0: 900, t1: 900},
-    {t0: 900, t1: 900}
+    {t0: 900, t1: 830},
+    {t0: 920, t1: 810}
 ];
 
 var bubbles = [
@@ -129,7 +129,7 @@ sport.on("open", function () {
                     if (tdiff > butt_on_delay) {
                         bubbles[b].buttplanted = true;
                         bubbles[b].current_thoughtbubble = random_thoughtbubble(bubbles[b]);
-                        emit_to_bubble(0, function (socket) {
+                        emit_to_bubble(b, function (socket) {
                             console.log("SET IMG");
                             socket.emit('setimg', bubbles[b].current_thoughtbubble);
                         });
@@ -145,7 +145,8 @@ sport.on("open", function () {
                     var tdiff = now.diff(bubbles[b].buttgone);
                     if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
                         bubbles[b].buttplanted = false;
-                        emit_to_bubble(0, function (socket) {
+                        emit_to_bubble(b, function (socket) {
+                            console.log('hide thoughts');
                             socket.emit('hidethoughts', true);
                         });
                     }

@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 public/styles/style.css
 public/images/thoughtbubbles/
+public/.com.apple.timemachine.supported
