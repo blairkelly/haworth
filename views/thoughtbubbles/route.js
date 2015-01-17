@@ -28,6 +28,10 @@ app.get('/thoughtbubbles', function (req, res) {
     res.send("specify a thought bubble id. /0 or /1");
 });
 
+app.get('/thoughtbubbles/static', function (req, res) {
+    res.render('thoughtbubbles/static.jade');
+});
+
 app.get('/thoughtbubbles/:id', function (req, res) {
     var id = parseInt(req.params.id, 10);
     if (id < 2) {
