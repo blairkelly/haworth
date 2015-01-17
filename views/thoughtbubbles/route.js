@@ -16,7 +16,7 @@ var cycle_time = 5555;
 
 var fs_profiles = [
     {t0: 900, t1: 900},
-    {t0: 400, t1: 400}
+    {t0: 900, t1: 900}
 ];
 
 var bubbles = [
@@ -28,7 +28,9 @@ app.get('/thoughtbubbles', function (req, res) {
     res.send("specify a thought bubble id. /0 or /1");
 });
 
-app.get('/thoughtbubbles/static', function (req, res) {
+app.get('/thoughtbubbles/static/:id', function (req, res) {
+    var id = parseInt(req.params.id, 10);
+    res.locals.thoughtbubble_id = id;
     res.render('thoughtbubbles/static.jade');
 });
 
