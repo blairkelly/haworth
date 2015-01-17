@@ -6,7 +6,7 @@ config.thoughtbubbles = [
     '3.jpg',
 ];
 
-config.serialaddress = "/dev/tty.usbmodem1411";
+config.serialaddress = "/dev/tty.usbmodem1481";
 
 //needed to export
 module.exports = config;
