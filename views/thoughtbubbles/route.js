@@ -69,21 +69,11 @@ io.on('connection', function(socket) {
         }
 
         socket.on('doneload', function (data) {
-            console.log('Done Load');
-
-            /*
-            setTimeout(function () {
-                if (socket.bubble.buttplanted) {
-                    socket.bubble.current_thoughtbubble = random_thoughtbubble(socket.bubble);
-                    console.log("Sending to bubbles[" + socket.bubble.id + "]: " + socket.bubble.current_thoughtbubble);
-                    socket.bubble.emit('setimg', socket.bubble.current_thoughtbubble);
-                }
-            }, cycle_time);
-            */
+            
         });
 
         socket.on('donehide', function (data) {
-            console.log('Done Hide');
+            //console.log('Done Hide');
         });
 
         socket.on('disconnect', function () {
@@ -120,14 +110,8 @@ sport.on("open", function () {
 
         for (var b = 0; b < bubbles.length; b++) {
             var sensor_ids = [];
-            if (b==0) {
-                sensor_ids.push('f0');
-                sensor_ids.push('f1');
-            }
-            else if (b==1) {
-                sensor_ids.push('f2');
-                sensor_ids.push('f3');
-            }
+            sensor_ids.push('f'+(b*2));
+            sensor_ids.push('f'+((b*2)+1));
 
             if ((params[sensor_ids[0]] > fs_profiles[b].t0) || (params[sensor_ids[1]] > fs_profiles[b].t1)) {
                 bubbles[b].buttgone = null;
