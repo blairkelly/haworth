@@ -72,8 +72,14 @@ body {
     }
     &.thought_bubble {
         background-color: #000;
-        //background-size: contain;
-        background-size: 444px;
+        background-size: contain;
+
+        &.tbid-0 {
+            background-size: 444px;
+        }
+        &.tbid-1 {
+            background-size: 444px;
+        }
     }
     &.bg {
         background-color: #fff;
