@@ -53,6 +53,9 @@ body {
     left: 0;
     opacity: 0;
 
+    background-image: url(/images/haworth-logo.png);
+    background-size: 42%;
+    background-color: #fff;
     background-position: center center;
     background-repeat: no-repeat;
 
@@ -70,23 +73,24 @@ body {
         font-weight: 600;
         font-size: 40px;
     }
-    &.thought_bubble {
+    &.bg-tb, &.thought_bubble {
         background-color: #000;
         background-size: contain;
-
         &.tbid-0 {
-            background-size: 444px;
+            background-size: 420px;
         }
         &.tbid-1 {
             background-size: 360px;
         }
     }
-    &.bg {
-        background-color: #fff;
-        color: #000;
-
-        background-image: url(/images/haworth-logo.png);
-        background-size: 42%;
+    &.bg-tb {
+        background-image: url(/images/_welcome.png);
+        &.tbid-0 {
+            //background-image: url(/images/thoughtbubbles/_welcome.png);
+        }
+        &.tbid-1 {
+            //background-image: url(/images/thoughtbubbles/_welcome.png);
+        }
     }
     &.buffer {
         .note {

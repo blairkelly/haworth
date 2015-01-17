@@ -47,3 +47,9 @@ require('./routes/style');
 find.fileSync('route.js', __dirname + '/views').forEach(function (route_file) {  //-     /\.js$/
     require(route_file);
 });
+
+//thoughtbubbles
+var thoughtbubble_folder = __dirname + '/public/images/thoughtbubbles/';
+find.fileSync(/\.png$/, thoughtbubble_folder).forEach(function (imgfile) {
+    config.thoughtbubbles.push(imgfile.substr(thoughtbubble_folder.length, imgfile.length));
+});
