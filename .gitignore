@@ -1,4 +1,4 @@
 node_modules/
 .DS_Store
 public/styles/style.css
-test_out.jpg
+s3_config.js
