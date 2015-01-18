@@ -10,7 +10,7 @@ var moment = module.parent.exports.moment;
 //var current_thoughtbubble = '';
 
 var butt_on_delay = 210;
-var butt_gone_delay = 420;
+var butt_gone_delay = 240;
 
 var cycle_time = 5555;
 
