@@ -60,7 +60,7 @@ body {
     background-repeat: no-repeat;
 
     &.transitions {
-        @include basic-transition( opacity 1.37s );
+        @include basic-transition( opacity 1.0s );
     }
     &.showing {
         opacity: 1;
@@ -80,7 +80,7 @@ body {
             background-size: 420px;
         }
         &.tbid-1 {
-            background-size: 360px;
+            background-size: 456px;
         }
     }
     &.bg-tb {
@@ -149,20 +149,4 @@ body {
 .button {
     cursor: pointer;
     display: inline-block;
-}
-
-.t_tests {
-    // -webkit-transition: background-color 2s; /* For Safari 3.1 to 6.0 */
-    //transition: background-color 2s;
-    @include basic-transition( background-color 2s linear );
-
-    background-color: #666;
-    color: #f0f;
-    text-align: center;
-    padding: 100px;
-
-    &:hover {
-        background-color: #111;
-        color: #fff;
-    }
 }

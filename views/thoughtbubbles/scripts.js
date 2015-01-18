@@ -1,5 +1,5 @@
 var img_transition_time = 1500;
-var min_display_time = 2000;
+var min_display_time = 1250;
 var in_transition = false;
 var cmds = [];
 var next_cmd_ok = true;
