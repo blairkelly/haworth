@@ -111,6 +111,7 @@ body {
         font-size: 1.2em;
         color: #333;
         padding: 15px;
+        background-color: #eaeaea;
     }
 
     &.information_page {
@@ -149,4 +150,14 @@ body {
 .button {
     cursor: pointer;
     display: inline-block;
+    border: 1px solid darkblue;
+    padding: 5px 8px;
+    margin: 10px 0;
+    background: #fff;
+    color: #333;
+
+    &:hover {
+        background-color: #383838;
+        color: #eee;
+    }
 }

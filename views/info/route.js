@@ -20,13 +20,15 @@ io.on('connection', function(socket) {
     });
 });
 
-sport.on("open", function () {
-    sport.on('data', function (data) {
-        var sockets = io.sockets.connected;
-        for (var socket in sockets) { 
-            if (sockets[socket].is_info) {
-                io.sockets.emit('serialdata', data);
+if (sport) {
+    sport.on("open", function () {
+        sport.on('data', function (data) {
+            var sockets = io.sockets.connected;
+            for (var socket in sockets) { 
+                if (sockets[socket].is_info) {
+                    io.sockets.emit('serialdata', data);
+                }
             }
-        }
+        });
     });
-});
+}

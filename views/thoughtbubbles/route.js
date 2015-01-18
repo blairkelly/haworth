@@ -88,6 +88,15 @@ io.on('connection', function(socket) {
             console.log('bubble popped');
         });
     });
+
+    socket.on('sit_down_0', function (data) {
+        console.log('Someone is sitting down in seat 0...');
+        send_a_thought(0);
+    }); 
+    socket.on('stand_up_0', function (data) {
+        console.log('Someone is lifting her butt off seat 0...');
+        scrub_thought(0);
+    }); 
 });
 
 var emit_to_bubble = function (bubble_id, callback) {
@@ -98,80 +107,90 @@ var emit_to_bubble = function (bubble_id, callback) {
         }
     }
 }
-
-sport.on("open", function () {
-    var message = null;
-    console.log('opened serial port');
-
-    sport.on('data', function (data) {
-        var now = moment();
-
-        var pairs = data.split('&');
-        var pieces = null;
-        var params = {};
-
-        for(var i = 0; i<pairs.length; i++) {
-            pieces = pairs[i].split('=');
-            params[pieces[0]] = pieces[1];
-        }
-
-        for (var b = 0; b < bubbles.length; b++) {
-            var sensor_ids = [];
-            sensor_ids.push('f'+(b*2));
-            sensor_ids.push('f'+((b*2)+1));
-
-            if ((params[sensor_ids[0]] > fs_profiles[b].t0) || (params[sensor_ids[1]] > fs_profiles[b].t1)) {
-                bubbles[b].buttgone = null;
-                if (!bubbles[b].buttseen) {
-                    bubbles[b].buttseen = moment();
-                }
-                if (!bubbles[b].buttplanted) {
-                    var tdiff = now.diff(bubbles[b].buttseen);
-                    if (tdiff > butt_on_delay) {
-                        bubbles[b].buttplanted = true;
-                        bubbles[b].current_thoughtbubble = random_thoughtbubble(bubbles[b]);
-                        emit_to_bubble(b, function (socket) {
-                            console.log("SET IMG");
-                            socket.emit('setimg', bubbles[b].current_thoughtbubble);
-                            var seat_id = b;
-                            var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+seat_id+'&img='+bubbles[seat_id].current_thoughtbubble;
-                            console.log(req_loc);
-                            request(req_loc, function (error, response, body) {
-                                if (!error) {
-                                    console.log('result of new_haworth_sitter at ' + seat_id);
-                                    console.log(response.statusCode) // 200
-                                    console.log(body);
-                                    request('http://10.0.1.222:3000/takephoto?eid='+parseInt(body, 10)+'&tb_id='+seat_id, function (error, response, body) {
-                                        if (!error) {
-                                            console.log("Got from rPi: " + response.statusCode) // 200
-                                        }
-                                        else {
-                                            console.log(error);
-                                        }
-                                    });
-                                }
-                            });
-                        });
+var send_a_thought = function (bubble_id) {
+    bubbles[bubble_id].buttplanted = true;
+    bubbles[bubble_id].current_thoughtbubble = random_thoughtbubble(bubbles[bubble_id]);
+    emit_to_bubble(bubble_id, function (socket) {
+        console.log("Sending a thought to " + bubble_id);
+        socket.emit('setimg', bubbles[bubble_id].current_thoughtbubble);
+        var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+bubbles[bubble_id].current_thoughtbubble;
+        console.log(req_loc);
+        request(req_loc, function (error, response, body) {
+            if (!error) {
+                console.log('result of new_haworth_sitter at ' + body);
+                console.log('asking for a photo!')
+                request('http://10.0.1.222:3000/takephoto?eid='+parseInt(body, 10)+'&tb_id='+bubble_id, function (error, response, body) {
+                    if (!error) {
+                        console.log("Got from camera: " + response.statusCode) // 200
                     }
-                }
-            }
-            else {
-                bubbles[b].buttseen = null;
-                if (!bubbles[b].buttgone) {
-                    bubbles[b].buttgone = moment();
-                }
-                if (bubbles[b].buttplanted) {
-                    var tdiff = now.diff(bubbles[b].buttgone);
-                    if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
-                        bubbles[b].buttplanted = false;
-                        emit_to_bubble(b, function (socket) {
-                            console.log('hide thoughts');
-                            socket.emit('hidethoughts', true);
-                        });
+                    else {
+                        console.log(error);
                     }
-                }
+                });
+            } else {
+                console.log("Error: Couldn't create a new haworth sitter.");
             }
-        }
-
+        });
     });
-});
+}
+var scrub_thought = function (bubble_id) {
+    bubbles[bubble_id].buttplanted = false;
+    emit_to_bubble(bubble_id, function (socket) {
+        console.log("Scrubbing " + bubble_id + "'s thoughts'");
+        socket.emit('hidethoughts', true);
+    });
+}
+
+if (sport) {
+    sport.on("open", function () {
+        var message = null;
+        console.log('opened serial port');
+
+        sport.on('data', function (data) {
+            var now = moment();
+
+            var pairs = data.split('&');
+            var pieces = null;
+            var params = {};
+
+            for(var i = 0; i<pairs.length; i++) {
+                pieces = pairs[i].split('=');
+                params[pieces[0]] = pieces[1];
+            }
+
+            for (var b = 0; b < bubbles.length; b++) {
+                var sensor_ids = [];
+                sensor_ids.push('f'+(b*2));
+                sensor_ids.push('f'+((b*2)+1));
+
+                if ((params[sensor_ids[0]] > fs_profiles[b].t0) || (params[sensor_ids[1]] > fs_profiles[b].t1)) {
+                    bubbles[b].buttgone = null;
+                    if (!bubbles[b].buttseen) {
+                        bubbles[b].buttseen = moment();
+                    }
+                    if (!bubbles[b].buttplanted) {
+                        var tdiff = now.diff(bubbles[b].buttseen);
+                        if (tdiff > butt_on_delay) {
+                            //someone sat down.
+                            send_a_thought(b);
+                        }
+                    }
+                }
+                else {
+                    bubbles[b].buttseen = null;
+                    if (!bubbles[b].buttgone) {
+                        bubbles[b].buttgone = moment();
+                    }
+                    if (bubbles[b].buttplanted) {
+                        var tdiff = now.diff(bubbles[b].buttgone);
+                        if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
+                            //person stood up
+                            scrub_thought(b);
+                        }
+                    }
+                }
+            }
+
+        });
+    });
+}

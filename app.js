@@ -63,3 +63,6 @@ var thoughtbubble_folder = __dirname + '/public/images/thoughtbubbles/';
 find.fileSync(/\.png$/, thoughtbubble_folder).forEach(function (imgfile) {
     config.thoughtbubbles.push(imgfile.substr(thoughtbubble_folder.length, imgfile.length));
 });
+find.fileSync(/\.jpg$/, thoughtbubble_folder).forEach(function (imgfile) {
+    config.thoughtbubbles.push(imgfile.substr(thoughtbubble_folder.length, imgfile.length));
+});
