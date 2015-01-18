@@ -3,3 +3,4 @@ node_modules/
 public/styles/style.css
 public/images/thoughtbubbles/
 public/.com.apple.timemachine.supported
+s3config.js
