@@ -33,6 +33,13 @@ var server = http.createServer(app); // start an HTTP server
 var io = require('socket.io')(server);
 server.listen(process.env.PORT || 3000);
 
+var knox = require('knox');
+var s3client = knox.createClient({
+    key: 'AKIAIPG35O4JUXEHP5GQ',
+    secret: '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',
+    bucket: 'blairkelly',
+});
+
 module.exports = {
     app: app,
     fs: fs,
@@ -41,6 +48,7 @@ module.exports = {
     serialcoms: serialcoms,
     moment: moment,
     request: request,
+    s3client: s3client,
 };
 
 //routes

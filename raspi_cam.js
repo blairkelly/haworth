@@ -8,7 +8,6 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var fs = require('fs');
 var moment = require('moment');
-var knox = require('knox');
 var request = require('request');
 
 var app = express();           // start Express framework
@@ -20,6 +19,7 @@ app.use(session({ secret: 'jasmine top' }));
 var server = http.createServer(app); // start an HTTP server
 server.listen(process.env.PORT || 3000);
 
+var knox = require('knox');
 var s3client = knox.createClient({
     key: 'AKIAIPG35O4JUXEHP5GQ',
     secret: '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',
