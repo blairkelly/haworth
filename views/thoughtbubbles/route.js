@@ -133,6 +133,14 @@ sport.on("open", function () {
                         emit_to_bubble(b, function (socket) {
                             console.log("SET IMG");
                             socket.emit('setimg', bubbles[b].current_thoughtbubble);
+
+                            request.get('http://blairkelly.ca/new_haworth_sitter').on('response', function (response) {
+                                console.log('result of new_haworth_sitter');
+                                console.log(response.statusCode) // 200
+                            });
+                            //request.get('http://10.0.1.222:3000/takephoto?eid=444&tb_id=0').on('response', function (response) {
+                            //    console.log(response.statusCode) // 200
+                            //});
                         });
                     }
                 }
@@ -156,8 +164,4 @@ sport.on("open", function () {
         }
 
     });
-});
-
-request.get('http://google.com/img.png').on('response', function (response) {
-    console.log(response.statusCode) // 200
 });

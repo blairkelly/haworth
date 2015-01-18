@@ -9,6 +9,7 @@ var session = require('express-session')
 var fs = require('fs');
 var moment = require('moment');
 var knox = require('knox');
+var request = require('request');
 
 var app = express();           // start Express framework
 
@@ -38,6 +39,9 @@ var upload_to_s3 = function (file_to_put) {
             if (s3upres.statusCode == 200) {
                 console.log('finished uploading ' + file_to_put + ' to s3!');
                 fs.unlink(file_to_put);
+                //request.get('http://10.0.1.333:3000/displaylatest').on('response', function (response) {
+                //    console.log(response.statusCode) // 200
+                //});
             }
             else {
                 console.log(s3upres.statusCode);
@@ -96,38 +100,6 @@ var fauxfoto = function (params) {
 
 app.get('/takephoto', function (req, res) {
     console.log(req.query);
-<<<<<<< HEAD
-    //takeShot('video0');
-
-    res.send('where the fuck is this');
-    
-    /*
-    cmds.push({
-        func: fauxfoto,
-        params: {
-            callback: function () {
-                console.log("CALLBACK");
-                res.send('hi2');
-                //cmds.shift();
-                next_cmd_ok = true;
-            }
-        }
-    });
-    */
-});
-
-/*
-setInterval(function () {
-    if (next_cmd_ok && (cmds.length > 0)) {
-        console.log("Next!");
-        next_cmd_ok = false;
-        cmds[0].func(cmds[0].params);
-    }
-}, 55);
-*/
-
-console.log("wtf");
-=======
 
     var eid = req.query.eid;
     var tb_id = req.query.tb_id;
@@ -161,4 +133,3 @@ console.log("wtf");
         cmds[0].func(cmds[0].params);
     }
 });
->>>>>>> 878d695ca02ec8193e14857a5c569229211b0466
