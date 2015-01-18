@@ -31,6 +31,7 @@ var upload_to_s3 = function (file_to_put) {
     var target_image_path = '/images/haworth/' + file_to_put;
 
     var s3_upload = s3client.putFile(file_to_put, target_image_path, function (err, s3upres) {
+        console.log('inside s3_upload callback...');
         if (err) {
             console.error("s3 put error...");
             console.error(err);
@@ -38,6 +39,9 @@ var upload_to_s3 = function (file_to_put) {
         if (s3upres.statusCode == 200) {
             console.log('finished uploading' + file_to_put + 'to s3!');
             fs.unlink(file_to_put);
+        }
+        else {
+            console.log(s3upres.statusCode);
         }
     });
 }
