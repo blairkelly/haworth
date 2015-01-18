@@ -5,12 +5,13 @@ var fs = module.parent.exports.fs;
 var scoms = module.parent.exports.serialcoms;
 var sport = scoms.connectedport;
 var moment = module.parent.exports.moment;
+var request = module.parent.exports.request;
 
 //var thoughtbubble_showing = false;
 //var current_thoughtbubble = '';
 
 var butt_on_delay = 210;
-var butt_gone_delay = 420;
+var butt_gone_delay = 240;
 
 var cycle_time = 5555;
 
@@ -155,4 +156,8 @@ sport.on("open", function () {
         }
 
     });
+});
+
+request.get('http://google.com/img.png').on('response', function (response) {
+    console.log(response.statusCode) // 200
 });
