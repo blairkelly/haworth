@@ -36,7 +36,7 @@ var upload_to_s3 = function (file_to_put) {
             console.error(err);
         }
         if (s3upres.statusCode == 200) {
-            console.log('finished uploading' + file_to_put + ' to s3!');
+            console.log('finished uploading ' + file_to_put + ' to s3!');
             fs.unlink(file_to_put);
         }
         else {
@@ -59,7 +59,8 @@ function takeShot(params) {
         fswebcam = spawn('fswebcam', [
             '--device', '/dev/video0', 
             '--no-banner', 
-            '--resolution', '960x720', 
+            '--nodrop', '1'
+            '--resolution', '1280x720', 
             '--jpeg', '100', 
             '--save', filename
         ]);
