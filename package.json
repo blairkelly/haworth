@@ -27,6 +27,7 @@
     "node-sass": "~1.2.2",
     "node-watch": "~0.3.4",
     "opencv": "^1.0.0",
+    "request": "^2.51.0",
     "serialport": "^1.4.10",
     "socket.io": "^1.2.1"
   }
