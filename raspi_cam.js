@@ -18,7 +18,10 @@ app.use(session({ secret: 'jasmine top' }));
 var server = http.createServer(app); // start an HTTP server
 server.listen(process.env.PORT || 3000);
 
-function takeShot(device) {
+var cmds = [];
+var next_cmd_ok = true;
+
+function takeShot(params, callback) {
     var filename = device + '.jpg';
  
     // Spawn the webcam child process.
@@ -53,7 +56,40 @@ function takeShot(device) {
  
 //takeShot('video0');
 
+var fauxfoto = function (params) {
+
+    params.callback();
+}
+
 app.get('/takephoto', function (req, res) {
     console.log(req.query);
-    res.send('hi');
+    //takeShot('video0');
+
+    res.send('where the fuck is this');
+    
+    /*
+    cmds.push({
+        func: fauxfoto,
+        params: {
+            callback: function () {
+                console.log("CALLBACK");
+                res.send('hi2');
+                //cmds.shift();
+                next_cmd_ok = true;
+            }
+        }
+    });
+    */
 });
+
+/*
+setInterval(function () {
+    if (next_cmd_ok && (cmds.length > 0)) {
+        console.log("Next!");
+        next_cmd_ok = false;
+        cmds[0].func(cmds[0].params);
+    }
+}, 55);
+*/
+
+console.log("wtf");
