@@ -12,6 +12,11 @@ serialcoms.new_serialport = function () {
         baudrate: 57600,
         // look for return and newline at the end of each data packet:
         parser: serialport.parsers.readline("\r\n") 
+    }, function (error) {
+        if (error) {
+            console.log("Error opening serialport!", error);
+        }
+        console.log("Switching to testing mode...");
     });
 }
 
