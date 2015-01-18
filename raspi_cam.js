@@ -39,9 +39,11 @@ var upload_to_s3 = function (file_to_put) {
             if (s3upres.statusCode == 200) {
                 console.log('finished uploading ' + file_to_put + ' to s3!');
                 fs.unlink(file_to_put);
-                //request.get('http://10.0.1.333:3000/displaylatest').on('response', function (response) {
-                //    console.log(response.statusCode) // 200
-                //});
+                request('http://10.0.1.5:3000/displaylatestsitter', function (error, response, body) {
+                    if (!error) {
+                        console.log("got from displaylatestsitter: " + response.statusCode); // 200
+                    }
+                });
             }
             else {
                 console.log(s3upres.statusCode);
