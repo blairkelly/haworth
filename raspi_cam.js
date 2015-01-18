@@ -26,7 +26,6 @@ var s3client = knox.createClient({
 });
 
 var upload_to_s3 = function (file_to_put) {
-    file_to_put = "test.jpg";
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
 
@@ -38,7 +37,7 @@ var upload_to_s3 = function (file_to_put) {
         }
         if (s3upres.statusCode == 200) {
             console.log('finished uploading' + file_to_put + ' to s3!');
-            //fs.unlink(file_to_put);
+            fs.unlink(file_to_put);
         }
         else {
             console.log(s3upres.statusCode);
@@ -82,7 +81,7 @@ function takeShot(params) {
         setTimeout(function () {
             console.log('calling upload_to_s3');
             upload_to_s3(filename);
-        }, 1000);
+        }, 100);
     });
 }
 
@@ -121,7 +120,3 @@ app.get('/takephoto', function (req, res) {
         cmds[0].func(cmds[0].params);
     }
 });
-
-setTimeout(function () {
-    upload_to_s3("nings.jpg");
-}, 1600);
