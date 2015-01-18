@@ -37,8 +37,8 @@ var upload_to_s3 = function (file_to_put) {
             console.error(err);
         }
         if (s3upres.statusCode == 200) {
-            console.log('finished uploading' + file_to_put + 'to s3!');
-            fs.unlink(file_to_put);
+            console.log('finished uploading' + file_to_put + ' to s3!');
+            //fs.unlink(file_to_put);
         }
         else {
             console.log(s3upres.statusCode);
@@ -121,3 +121,7 @@ app.get('/takephoto', function (req, res) {
         cmds[0].func(cmds[0].params);
     }
 });
+
+setTimeout(function () {
+    upload_to_s3("nings.jpg");
+}, 1600);
