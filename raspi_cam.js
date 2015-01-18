@@ -26,6 +26,7 @@ var s3client = knox.createClient({
 });
 
 var upload_stream_to_s3 = function (file_to_put) {
+    console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
 
     var s3_upload = s3client.putFile(file_to_put, target_image_path, function (err, s3upres) {
@@ -54,7 +55,7 @@ function takeShot(params) {
         fswebcam = spawn('fswebcam', [
             '--device', '/dev/video0', 
             '--no-banner', 
-            '--resolution', '1280x720', 
+            '--resolution', '960x720', 
             '--jpeg', '100', 
             '--save', filename
         ]);
