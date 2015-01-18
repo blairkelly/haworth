@@ -26,7 +26,7 @@ var s3client = knox.createClient({
     bucket: 'blairkelly',
 });
 
-var upload_to_s3 = function (file_to_put) {
+var upload_to_s3 = function (eid, file_to_put) {
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
 
@@ -39,9 +39,13 @@ var upload_to_s3 = function (file_to_put) {
             if (s3upres.statusCode == 200) {
                 console.log('finished uploading ' + file_to_put + ' to s3!');
                 fs.unlink(file_to_put);
-                request('http://10.0.1.5:3000/displaylatestsitter', function (error, response, body) {
+                request('http://www.blairkelly.ca/update_haworth_sitter_picture?sitter_id='+eid+'&picture='+file_to_put, function (error, response, body) {
                     if (!error) {
-                        console.log("got from displaylatestsitter: " + response.statusCode); // 200
+                        request('http://10.0.1.5:3000/displaylatestsitter', function (error, response, body) {
+                            if (!error) {
+                                console.log("got from displaylatestsitter: " + response.statusCode); // 200
+                            }
+                        });
                     }
                 });
             }
@@ -90,7 +94,7 @@ function takeShot(params) {
         params.callback();
         setTimeout(function () {
             console.log('calling upload_to_s3');
-            upload_to_s3(filename);
+            upload_to_s3(params.eid, filename);
         }, 100);
     });
 }
@@ -117,6 +121,7 @@ app.get('/takephoto', function (req, res) {
             req: req,
             res: res,
             filename: 'eid-' + eid + '_tb-' + tb_id + '_' + time + '.jpg',
+            eid: eid,
             callback: function () {
                 res.send(200);
                 cmds.shift();
