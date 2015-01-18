@@ -25,7 +25,8 @@ var s3client = knox.createClient({
     bucket: 'blairkelly',
 });
 
-var upload_stream_to_s3 = function (file_to_put) {
+var upload_to_s3 = function (file_to_put) {
+    file_to_put = "test.jpg";
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
 
@@ -73,8 +74,11 @@ function takeShot(params) {
     // continue processing after it has taken photos
     fswebcam.on('exit', function (code) {
         console.log('done');
-        upload_stream_to_s3(filename);
         params.callback();
+        setTimeout(function () {
+            console.log('calling upload_to_s3');
+            upload_to_s3(filename);
+        }, 1000);
     });
 }
 
