@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(session({ secret: 'jasmine top' }));
 
 var server = http.createServer(app); // start an HTTP server
-server.listen(process.env.PORT || 3000);
+server.listen(3300);
 
 var knox = require('knox');
 var s3client = knox.createClient({
