@@ -240,7 +240,7 @@ if (sport) {
                         var tdiff = now.diff(bubbles[b].buttgone);
                         if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
                             //person stood up
-                            update_sitter_sit_time_and_display_latest(b);
+                            update_sitter_sit_time(b);
                             scrub_thought(b);
                         }
                     }

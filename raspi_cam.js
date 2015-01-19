@@ -47,6 +47,15 @@ var upload_to_s3 = function (eid, file_to_put) {
                     if (!error) {
                         console.log("Updated haworth sitter picture.");
 
+                        request('http://10.0.1.14:3000/displaylatestsitter', function (error, response, body) {
+                            if (!error) {
+                                console.log("Requested latest sitter.");
+                            }
+                            else {
+                                console.log("problem requesting latest sitter...");
+                            }
+                        });
+
                         cmds.shift();
                         if (cmds.length > 0) {
                             console.log("Calling next in line...");
