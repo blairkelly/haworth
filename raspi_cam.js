@@ -66,7 +66,7 @@ function takeWebcamShot(params) {
     var req = params.req;
     var res = params.res;
     var filename = params.filename;
-    console.log("takeShot: " + filename);
+    console.log("takeWebcamShot: " + filename);
  
     // Spawn the webcam child process.
     var spawn = require('child_process').spawn,
@@ -103,7 +103,7 @@ function takeGphotoShot(params) {
     var req = params.req;
     var res = params.res;
     var filename = params.filename;
-    console.log("takeShot: " + filename);
+    console.log("takeGphotoShot: " + filename);
  
     // Spawn the gphoto2 child process.
     var spawn = require('child_process').spawn;
@@ -150,7 +150,7 @@ app.get('/takephoto', function (req, res) {
     }
     
     cmds.push({
-        func: takeShot,
+        func: takeGphotoShot,
         params: {
             req: req,
             res: res,
