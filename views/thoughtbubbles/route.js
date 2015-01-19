@@ -75,8 +75,8 @@ io.on('connection', function(socket) {
             };
         }
 
-        socket.on('doneload', function (data) {
-            
+        socket.on('doneload', function (thoughtbubble_image) {
+            create_sitter_and_request_photo(socket.bubble.id, thoughtbubble_image);
         });
 
         socket.on('donehide', function (data) {
@@ -113,24 +113,6 @@ var send_a_thought = function (bubble_id) {
     emit_to_bubble(bubble_id, function (socket) {
         console.log("Sending a thought to " + bubble_id);
         socket.emit('setimg', bubbles[bubble_id].current_thoughtbubble);
-        var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+bubbles[bubble_id].current_thoughtbubble;
-        console.log(req_loc);
-        request(req_loc, function (error, response, body) {
-            if (!error) {
-                console.log('result of new_haworth_sitter at ' + body);
-                console.log('asking for a photo!')
-                request('http://10.0.1.222:3000/takephoto?eid='+parseInt(body, 10)+'&tb_id='+bubble_id, function (error, response, body) {
-                    if (!error) {
-                        console.log("Got from camera: " + response.statusCode) // 200
-                    }
-                    else {
-                        console.log(error);
-                    }
-                });
-            } else {
-                console.log("Error: Couldn't create a new haworth sitter.");
-            }
-        });
     });
 }
 var scrub_thought = function (bubble_id) {
@@ -138,6 +120,26 @@ var scrub_thought = function (bubble_id) {
     emit_to_bubble(bubble_id, function (socket) {
         console.log("Scrubbing " + bubble_id + "'s thoughts'");
         socket.emit('hidethoughts', true);
+    });
+}
+var create_sitter_and_request_photo = function (bubble_id, thoughtbubble_image) {
+    var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+thoughtbubble_image;
+    console.log(req_loc);
+    request(req_loc, function (error, response, body) {
+        if (!error) {
+            console.log('result of new_haworth_sitter at ' + body);
+            console.log('asking for a photo!');
+            request('http://10.0.1.222:3000/takephoto?eid='+parseInt(body, 10)+'&tb_id='+bubble_id, function (error, response, body) {
+                if (!error) {
+                    console.log("Got from camera: " + response.statusCode) // 200
+                }
+                else {
+                    console.log(error);
+                }
+            });
+        } else {
+            console.log("Error: Couldn't create a new haworth sitter.");
+        }
     });
 }
 

@@ -62,7 +62,7 @@ var upload_to_s3 = function (eid, file_to_put) {
 var cmds = [];
 var queue_empty = true;
 
-function takeShot(params) {
+function takeWebcamShot(params) {
     var req = params.req;
     var res = params.res;
     var filename = params.filename;
@@ -90,6 +90,40 @@ function takeShot(params) {
  
     // continue processing after it has taken photos
     fswebcam.on('exit', function (code) {
+        console.log('done');
+        params.callback();
+        setTimeout(function () {
+            console.log('calling upload_to_s3');
+            upload_to_s3(params.eid, filename);
+        }, 100);
+    });
+}
+
+function takeGphotoShot(params) {
+    var req = params.req;
+    var res = params.res;
+    var filename = params.filename;
+    console.log("takeShot: " + filename);
+ 
+    // Spawn the gphoto2 child process.
+    var spawn = require('child_process').spawn;
+    var gphoto2 = spawn('gphoto2', [
+            '--capture-image-and-download', 
+            '--filename', filename
+        ]);
+ 
+    // Log fswebcam output.
+    gphoto2.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+    });
+ 
+    // Log any errors.
+    gphoto2.stderr.on('data', function (data) {
+        console.log('stderr: ' + data);
+    });
+ 
+    // continue processing after it has taken photos
+    gphoto2.on('exit', function (code) {
         console.log('done');
         params.callback();
         setTimeout(function () {

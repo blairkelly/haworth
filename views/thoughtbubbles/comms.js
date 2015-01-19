@@ -14,7 +14,7 @@ var add_socket_listeners = function () {
                 params: {
                     imgname: imgname,
                     callback: function () {
-                        socket.emit('doneload', true);
+                        socket.emit('doneload', imgname);
                         setTimeout(function () {
                             next_cmd_ok = true;
                         }, min_display_time);
