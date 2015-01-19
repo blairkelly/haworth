@@ -6,7 +6,7 @@ var moment = module.parent.exports.moment;
 var request = module.parent.exports.request;
 var s3client = module.parent.exports.s3client;
 
-app.get('/displaylatestsitter', function (req, res) {
+var retrieve_latest_filename = function (callback) {
     request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
         if (!error) {
             var body_json;
@@ -14,19 +14,36 @@ app.get('/displaylatestsitter', function (req, res) {
                 body_json = JSON.parse(body);
             } catch (err) {
                 console.log(body, err);
-                return console.log("Parse failed.");
+                console.log("Parse failed.");
+                callback(null);
+                return null;
             }
-            console.log('emitting to latest: ' +  body_json.picture);
+            callback(body_json.picture);
+        }
+    });
+}
+
+app.get('/displaylatestsitter', function (req, res) {
+    retrieve_latest_filename(function (filename) {
+        if (filename) {
+            console.log('emitting to latest: ' +  filename);
             emit_to_latest(function (socket) {
-                socket.emit('setimg', body_json.picture);
+                socket.emit('setimg', filename);
             });
             return res.send(200);
         }
+        else {
+            return res.send(404);
+        }
     });
+    
 });
 
 app.get('/latest', function (req, res) {
-    res.render('latest/latest.jade');
+    retrieve_latest_filename(function (filename) {
+        res.locals.latest_filename = filename;
+        res.render('latest/latest.jade');
+    });
 });
 
 app.get('/latest_sitter/:img', function (req, res) {

@@ -92,6 +92,9 @@ body {
             //background-image: url(/images/thoughtbubbles/_welcome.png);
         }
     }
+    &.thought_bubble.latest {
+        background-size: cover;
+    }
     &.buffer {
         .note {
             left: 10px;

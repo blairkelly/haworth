@@ -1,9 +1,9 @@
 extends ../../layouts/main
 
 block body
-    .surface.thought_bubble.buffer()
+    .surface.latest.thought_bubble.buffer.showing(style="background-image: url('/latest_sitter/#{latest_filename}');")
         .note buffer
-    .surface.thought_bubble.main()
+    .surface.latest.thought_bubble.main.showing(style="background-image: url('/latest_sitter/#{latest_filename}');")
         .note main
 
 block pagespecific_scripts
