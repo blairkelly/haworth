@@ -42,16 +42,6 @@ var upload_to_s3 = function (eid, file_to_put) {
                 request('http://www.blairkelly.ca/update_haworth_sitter_picture?sitter_id='+eid+'&picture='+file_to_put, function (error, response, body) {
                     if (!error) {
                         console.log("Updated haworth sitter picture.");
-                        /*
-                        request('http://10.0.1.5:3000/displaylatestsitter', function (error, response, body) {
-                            if (!error) {
-                                console.log("got from displaylatestsitter: " + response.statusCode); // 200
-                            }
-                            else {
-                                console.log("problem trying to display latest sitter.");
-                            }
-                        });
-                        */
                     }
                 });
             }
