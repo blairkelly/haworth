@@ -53,6 +53,7 @@ var upload_to_s3 = function (eid, file_to_put) {
                             }
                             else {
                                 console.log("problem requesting latest sitter...");
+                                console.log(error);
                             }
                         });
 
