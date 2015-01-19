@@ -97,7 +97,7 @@ io.on('connection', function(socket) {
     socket.on('stand_up_0', function (data) {
         console.log('Someone is lifting her butt off seat 0...');
         bubbles[0].buttgone = moment();
-        update_sitter_sit_time_and_display_latest(0);
+        update_sitter_sit_time(0);
         scrub_thought(0);
     }); 
 });
