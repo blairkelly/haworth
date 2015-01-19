@@ -162,6 +162,7 @@ app.get('/takephoto', function (req, res) {
         return res.send(200);
     }
     else {
+        console.log("PHOTO REQUESTED...");
         taking_photo = true;
         console.log(req.query);
 
