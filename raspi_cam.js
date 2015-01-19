@@ -39,7 +39,9 @@ var upload_to_s3 = function (eid, file_to_put) {
             if (s3upres.statusCode == 200) {
                 console.log('finished uploading ' + file_to_put + ' to s3!');
                 fs.unlink(file_to_put);
-                request('http://www.blairkelly.ca/update_haworth_sitter_picture?sitter_id='+eid+'&picture='+file_to_put, function (error, response, body) {
+                var req_loc = 'http://www.blairkelly.ca/update_haworth_sitter?sitter_id='+eid+'&picture='+file_to_put;
+                console.log(req_loc);
+                request(req_loc, function (error, response, body) {
                     if (!error) {
                         console.log("Updated haworth sitter picture.");
                     }

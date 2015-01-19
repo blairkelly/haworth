@@ -76,7 +76,7 @@ io.on('connection', function(socket) {
         }
 
         socket.on('doneload', function (thoughtbubble_image) {
-            create_sitter_and_request_photo(socket.bubble.id, thoughtbubble_image);
+            
         });
 
         socket.on('donehide', function (data) {
@@ -91,14 +91,25 @@ io.on('connection', function(socket) {
 
     socket.on('sit_down_0', function (data) {
         console.log('Someone is sitting down in seat 0...');
+        bubbles[0].buttsat = moment();
         send_a_thought(0);
     }); 
     socket.on('stand_up_0', function (data) {
         console.log('Someone is lifting her butt off seat 0...');
+        bubbles[0].buttgone = moment();
+        update_sitter_sit_time_and_display_latest(0);
         scrub_thought(0);
     }); 
 });
 
+var emit_to_latest = function (callback) {
+    var sockets = io.sockets.connected;
+    for (var key in sockets) { 
+        if (sockets[key].is_latest) {
+            callback(sockets[key]);
+        }
+    }
+}
 var emit_to_bubble = function (bubble_id, callback) {
     var sockets = io.sockets.connected;
     for (var key in sockets) { 
@@ -108,12 +119,16 @@ var emit_to_bubble = function (bubble_id, callback) {
     }
 }
 var send_a_thought = function (bubble_id) {
+    bubbles[bubble_id].buttsat = moment();
     bubbles[bubble_id].buttplanted = true;
     bubbles[bubble_id].current_thoughtbubble = random_thoughtbubble(bubbles[bubble_id]);
     emit_to_bubble(bubble_id, function (socket) {
         console.log("Sending a thought to " + bubble_id);
         socket.emit('setimg', bubbles[bubble_id].current_thoughtbubble);
     });
+    setTimeout(function () {
+        create_sitter_and_request_photo(bubble_id, bubbles[bubble_id].current_thoughtbubble);
+    }, 700);
 }
 var scrub_thought = function (bubble_id) {
     bubbles[bubble_id].buttplanted = false;
@@ -122,14 +137,49 @@ var scrub_thought = function (bubble_id) {
         socket.emit('hidethoughts', true);
     });
 }
+var update_sitter_sit_time_and_display_latest = function (bubble_id) {
+    if (bubbles[bubble_id].sitter_id && bubbles[bubble_id].buttsat && bubbles[bubble_id].buttgone) {
+        var sit_time = Math.abs(bubbles[bubble_id].buttsat.diff(bubbles[bubble_id].buttgone));
+
+        request('http://www.blairkelly.ca/update_haworth_sitter?sitter_id='+bubbles[bubble_id].sitter_id+'&sit_time='+sit_time, function (error, response, body) {
+            if (!error) {
+                console.log("Updated haworth sitter " + bubbles[bubble_id].sitter_id + " sit time.");
+            }
+        });
+
+        //give it half a second to maximize probability image has finished uploading
+        setTimeout(function () {
+            console.log('get latest picture name');
+            request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
+                if (!error) {
+                    var body_json;
+                    try {
+                        body_json = JSON.parse(body);
+                    } catch (err) {
+                        console.log(body, err);
+                        return console.log("Parse failed.");
+                    }
+                    console.log('emitting to latest: ' +  body_json.picture);
+                    emit_to_latest(function (socket) {
+                        socket.emit('setimg', body_json.picture);
+                    });
+                }
+            });
+        }, 500);
+    }
+    else {
+        console.log("Missing params. Will not update.");
+    }
+}
 var create_sitter_and_request_photo = function (bubble_id, thoughtbubble_image) {
     var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+thoughtbubble_image;
     console.log(req_loc);
     request(req_loc, function (error, response, body) {
         if (!error) {
-            console.log('result of new_haworth_sitter at ' + body);
+            var new_sitter_id = bubbles[bubble_id].sitter_id = parseInt(body, 10);
+            console.log('result of new_haworth_sitter at ' + new_sitter_id);
             console.log('asking for a photo!');
-            request('http://10.0.1.222:3000/takephoto?eid='+parseInt(body, 10)+'&tb_id='+bubble_id, function (error, response, body) {
+            request('http://10.0.1.222:3000/takephoto?eid='+new_sitter_id+'&tb_id='+bubble_id, function (error, response, body) {
                 if (!error) {
                     console.log("Got from camera: " + response.statusCode) // 200
                 }
@@ -142,6 +192,8 @@ var create_sitter_and_request_photo = function (bubble_id, thoughtbubble_image) 
         }
     });
 }
+
+
 
 if (sport) {
     sport.on("open", function () {
@@ -187,6 +239,7 @@ if (sport) {
                         var tdiff = now.diff(bubbles[b].buttgone);
                         if ((tdiff > butt_gone_delay) && bubbles[b].buttplanted) {
                             //person stood up
+                            update_sitter_sit_time_and_display_latest(b);
                             scrub_thought(b);
                         }
                     }
