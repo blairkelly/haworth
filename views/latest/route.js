@@ -20,6 +20,7 @@ app.get('/displaylatestsitter', function (req, res) {
             emit_to_latest(function (socket) {
                 socket.emit('setimg', body_json.picture);
             });
+            return res.send(200);
         }
     });
 });
