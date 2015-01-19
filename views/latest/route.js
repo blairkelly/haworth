@@ -8,13 +8,19 @@ var s3client = module.parent.exports.s3client;
 
 app.get('/displaylatestsitter', function (req, res) {
     request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
-        var body_json = JSON.parse(body);
-        console.log('emitting to latest: ' +  body_json.picture);
-        emit_to_latest(function (socket) {
-            console.log('emit!');
-            socket.emit('setimg', body_json.picture);
-        });
-        res.send(200);
+        if (!error) {
+            var body_json;
+            try {
+                body_json = JSON.parse(body);
+            } catch (err) {
+                console.log(body, err);
+                return console.log("Parse failed.");
+            }
+            console.log('emitting to latest: ' +  body_json.picture);
+            emit_to_latest(function (socket) {
+                socket.emit('setimg', body_json.picture);
+            });
+        }
     });
 });
 
@@ -24,7 +30,6 @@ app.get('/latest', function (req, res) {
 
 app.get('/latest_sitter/:img', function (req, res) {
     console.log(req.params.img);
-    
 
     s3client.getFile('/images/haworth/' + req.params.img, function (err, s3res) {
         if (err) {
@@ -41,6 +46,15 @@ app.get('/latest_sitter/:img', function (req, res) {
     });
 });
 
+var emit_to_latest = function (callback) {
+    var sockets = io.sockets.connected;
+    for (var key in sockets) { 
+        if (sockets[key].is_latest) {
+            callback(sockets[key]);
+        }
+    }
+}
+
 io.on('connection', function(socket) {
     socket.on('latest', function (data) {
         console.log("latest connected...");
@@ -54,11 +68,3 @@ io.on('connection', function(socket) {
     });
 });
 
-var emit_to_latest = function (callback) {
-    var sockets = io.sockets.connected;
-    for (var key in sockets) { 
-        if (sockets[key].is_latest) {
-            callback(sockets[key]);
-        }
-    }
-}

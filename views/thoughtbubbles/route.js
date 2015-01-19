@@ -137,7 +137,28 @@ var scrub_thought = function (bubble_id) {
         socket.emit('hidethoughts', true);
     });
 }
-var update_sitter_sit_time_and_display_latest = function (bubble_id) {
+var display_latest_sitter = function () {
+     //give it half a second to maximize probability image has finished uploading
+    setTimeout(function () {
+        console.log('get latest picture name');
+        request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
+            if (!error) {
+                var body_json;
+                try {
+                    body_json = JSON.parse(body);
+                } catch (err) {
+                    console.log(body, err);
+                    return console.log("Parse failed.");
+                }
+                console.log('emitting to latest: ' +  body_json.picture);
+                emit_to_latest(function (socket) {
+                    socket.emit('setimg', body_json.picture);
+                });
+            }
+        });
+    }, 500);
+}
+var update_sitter_sit_time = function (bubble_id) {
     if (bubbles[bubble_id].sitter_id && bubbles[bubble_id].buttsat && bubbles[bubble_id].buttgone) {
         var sit_time = Math.abs(bubbles[bubble_id].buttsat.diff(bubbles[bubble_id].buttgone));
 
@@ -146,26 +167,6 @@ var update_sitter_sit_time_and_display_latest = function (bubble_id) {
                 console.log("Updated haworth sitter " + bubbles[bubble_id].sitter_id + " sit time.");
             }
         });
-
-        //give it half a second to maximize probability image has finished uploading
-        setTimeout(function () {
-            console.log('get latest picture name');
-            request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
-                if (!error) {
-                    var body_json;
-                    try {
-                        body_json = JSON.parse(body);
-                    } catch (err) {
-                        console.log(body, err);
-                        return console.log("Parse failed.");
-                    }
-                    console.log('emitting to latest: ' +  body_json.picture);
-                    emit_to_latest(function (socket) {
-                        socket.emit('setimg', body_json.picture);
-                    });
-                }
-            });
-        }, 500);
     }
     else {
         console.log("Missing params. Will not update.");

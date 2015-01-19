@@ -26,6 +26,8 @@ var s3client = knox.createClient({
     bucket: 'blairkelly',
 });
 
+var taking_photo = false;
+
 var upload_to_s3 = function (eid, file_to_put) {
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
@@ -44,6 +46,15 @@ var upload_to_s3 = function (eid, file_to_put) {
                 request(req_loc, function (error, response, body) {
                     if (!error) {
                         console.log("Updated haworth sitter picture.");
+
+                        cmds.shift();
+                        if (cmds.length > 0) {
+                            console.log("Calling next in line...");
+                            cmds[0].func(cmds[0].params);
+                        } else {
+                            console.log("queue is empty.");
+                            queue_empty = true;
+                        }
                     }
                 });
             }
@@ -78,12 +89,12 @@ function takeWebcamShot(params) {
  
     // Log fswebcam output.
     fswebcam.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+        //console.log('stdout: ' + data);
     });
  
     // Log any errors.
     fswebcam.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+        //console.log('stderr: ' + data);
     });
  
     // continue processing after it has taken photos
@@ -93,7 +104,7 @@ function takeWebcamShot(params) {
         setTimeout(function () {
             console.log('calling upload_to_s3');
             upload_to_s3(params.eid, filename);
-        }, 100);
+        }, 22);
     });
 }
 
@@ -125,9 +136,10 @@ function takeGphotoShot(params) {
         console.log('done');
         params.callback();
         setTimeout(function () {
+            taking_photo = false;
             console.log('calling upload_to_s3');
             upload_to_s3(params.eid, filename);
-        }, 100);
+        }, 22);
     });
 }
 
@@ -137,38 +149,36 @@ var fauxfoto = function (params) {
 }
 
 app.get('/takephoto', function (req, res) {
-    console.log(req.query);
-
-    var eid = req.query.eid;
-    var tb_id = req.query.tb_id;
-    var time = moment().format('YYYY-MM-DD-HH-mm-ss');
-    
-    if (!eid || !tb_id) {
-        return res.send("missing query components");
+    if (taking_photo) {
+        return res.send(200);
     }
-    
-    cmds.push({
-        func: takeGphotoShot,
-        params: {
-            req: req,
-            res: res,
-            filename: 'eid-' + eid + '_tb-' + tb_id + '_' + time + '.jpg',
-            eid: eid,
-            callback: function () {
-                res.send(200);
-                cmds.shift();
-                if (cmds.length > 0) {
-                    console.log("Calling next in line...");
-                    cmds[0].func(cmds[0].params);
-                } else {
-                    console.log("queue is empty.");
-                    queue_empty = true;
+    else {
+        taking_photo = true;
+        console.log(req.query);
+
+        var eid = req.query.eid;
+        var tb_id = req.query.tb_id;
+        var time = moment().format('YYYY-MM-DD-HH-mm-ss');
+        
+        if (!eid || !tb_id) {
+            return res.send("missing query components");
+        }
+        
+        cmds.push({
+            func: takeGphotoShot,
+            params: {
+                req: req,
+                res: res,
+                filename: 'eid-' + eid + '_tb-' + tb_id + '_' + time + '.jpg',
+                eid: eid,
+                callback: function () {
+                    res.send(200);
                 }
             }
+        });
+        if (queue_empty) {
+            queue_empty = false;
+            cmds[0].func(cmds[0].params);
         }
-    });
-    if (queue_empty) {
-        queue_empty = false;
-        cmds[0].func(cmds[0].params);
     }
 });
