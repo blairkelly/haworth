@@ -25,7 +25,7 @@ var retrieve_latest_filename = function (callback) {
 
 var upload_to_s3 = function (file_to_put) {
     console.log("attempting to upload: " + file_to_put);
-    var file_to_send_path = './tests3.jpg';
+    var file_to_send_path = __dirname + '/tests3.jpg';
     var target_image_path = '/images/haworth/' + file_to_put;
 
     var s3_upload = s3client.putFile(file_to_send_path, target_image_path, function (err, s3upres) {
