@@ -1,9 +1,9 @@
 #!/bin/bash
 
-NODE=/opt/node/bin/node
-SERVER_JS_FILE=/home/debian/Desktop/haworth/raspi_cam.js
-USER=pi
-OUT=/home/pi/nodejs.log
+NODE=/usr/bin/node
+SERVER_JS_FILE=/home/debian/Desktop/haworth/cam.js
+USER=root
+OUT=/home/debian/Desktop/nodejs.log
 
 case "$1" in
 
