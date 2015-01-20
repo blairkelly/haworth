@@ -193,3 +193,7 @@ app.get('/takephoto', function (req, res) {
         }
     }
 });
+
+app.get('/', function (req, res) {
+    res.send("I am alive.");
+});
