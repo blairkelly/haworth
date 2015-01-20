@@ -37,7 +37,12 @@ ftpclient.on('ready', function() {
     });
 });
 // connect to localhost:21 as anonymous
-ftpclient.connect();
+ftpclient.connect({
+    host: '10.0.1.5',
+    port: 21,
+    user: 'blairkelly',
+    password: 'advance'
+});
 
 var taking_photo = false;
 
