@@ -19,15 +19,79 @@ app.use(session({ secret: 'jasmine top' }));
 var server = http.createServer(app); // start an HTTP server
 server.listen(3300);
 
-var knox = require('knox');
-var s3client = knox.createClient({
-    key: 'AKIAIPG35O4JUXEHP5GQ',
-    secret: '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',
-    bucket: 'blairkelly',
+//var knox = require('knox');
+//var s3client = knox.createClient({
+//    key: 'AKIAIPG35O4JUXEHP5GQ',
+//    secret: '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',
+//    bucket: 'blairkelly',
+//});
+
+var ftp = require('ftp');
+
+var ftpclient = new ftp();
+ftpclient.on('ready', function() {
+    ftpclient.list(function (err, list) {
+        if (err) throw err;
+        console.dir(list);
+        c.end();
+    });
 });
+// connect to localhost:21 as anonymous
+ftpclient.connect();
 
 var taking_photo = false;
 
+var upload_to_ftp = function (eid, file_to_put) {
+    console.log("attempting to upload: " + file_to_put);
+    var target_image_path = '/Users/blairkelly/Sites/haworth/public/images/sitters/' + file_to_put;
+
+    var s3_upload = s3client.putFile(file_to_put, target_image_path, function (err, s3upres) {
+        if (err) {
+            console.error("s3 put error...");
+            console.error(err);
+        }
+        if (s3upres) {
+            if (s3upres.statusCode == 200) {
+                console.log('finished uploading ' + file_to_put + ' to s3!');
+                fs.unlink(file_to_put);
+                var req_loc = 'http://www.blairkelly.ca/update_haworth_sitter?sitter_id='+eid+'&picture='+file_to_put;
+                console.log(req_loc);
+                request(req_loc, function (error, response, body) {
+                    if (!error) {
+                        console.log("Updated haworth sitter picture.");
+
+                        request('http://10.0.1.14:3000/displaylatestsitter', function (error, response, body) {
+                            if (!error) {
+                                console.log("Requested latest sitter.");
+                            }
+                            else {
+                                console.log("problem requesting latest sitter...");
+                                console.log(error);
+                            }
+                        });
+
+                        cmds.shift();
+                        if (cmds.length > 0) {
+                            console.log("Calling next in line...");
+                            cmds[0].func(cmds[0].params);
+                        } else {
+                            console.log("queue is empty.");
+                            queue_empty = true;
+                        }
+                    }
+                });
+            }
+            else {
+                console.log(s3upres.statusCode);
+            }
+        }
+        else {
+            console.log('s3upres is empty');
+        }
+    });
+}
+
+/*
 var upload_to_s3 = function (eid, file_to_put) {
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/images/haworth/' + file_to_put;
@@ -77,6 +141,7 @@ var upload_to_s3 = function (eid, file_to_put) {
         }
     });
 }
+*/
 
 var cmds = [];
 var queue_empty = true;
