@@ -33,7 +33,7 @@ ftpclient.on('ready', function() {
     ftpclient.list(function (err, list) {
         if (err) throw err;
         console.dir(list);
-        c.end();
+        ftpclient.end();
     });
 });
 // connect to localhost:21 as anonymous
