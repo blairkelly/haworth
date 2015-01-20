@@ -27,22 +27,6 @@ server.listen(3300);
 //});
 
 var ftp = require('ftp');
-var ftp_ready = false;
-var ftpclient = new ftp();
-ftpclient.on('ready', function() {
-    console.log("FTP IS READY");
-    ftp_ready = true;
-});
-
-ftpclient.connect({
-    host: '10.0.1.5',
-    port: 21,
-    user: 'blairkelly',
-    password: 'advance'
-});
-
-var taking_photo = false;
-
 
 var request_to_display_latest_sitter = function (eid, file_to_put) {
     var req_loc = 'http://www.blairkelly.ca/update_haworth_sitter?sitter_id='+eid+'&picture='+file_to_put;
@@ -76,8 +60,9 @@ var request_to_display_latest_sitter = function (eid, file_to_put) {
 var upload_to_ftp = function (eid, file_to_put) {
     console.log("attempting to upload: " + file_to_put);
     var target_image_path = '/Users/blairkelly/Sites/haworth/public/images/sitters/' + file_to_put;
-
-    if (ftp_ready) {
+    var ftpclient = new ftp();
+    ftpclient.on('ready', function() {
+        console.log("FTP IS READY");
         ftpclient.put(file_to_put, target_image_path, function (err) {
             if (err) throw err;
             ftpclient.end();
@@ -85,7 +70,13 @@ var upload_to_ftp = function (eid, file_to_put) {
             fs.unlink(file_to_put);
             request_to_display_latest_sitter(eid, file_to_put);
         });
-    }
+    });
+    ftpclient.connect({
+        host: '10.0.1.5',
+        port: 21,
+        user: 'blairkelly',
+        password: 'advance'
+    });
 }
 
 /*
@@ -208,9 +199,9 @@ app.get('/takephoto', function (req, res) {
 
         var eid = req.query.eid;
         var tb_id = req.query.tb_id;
-        var time = moment().format('YYYY-MM-DD-HH-mm-ss');
+        var time = req.query.time;
         
-        if (!eid || !tb_id) {
+        if (!eid || !tb_id || !time) {
             return res.send("missing query components");
         }
         

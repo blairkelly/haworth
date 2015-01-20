@@ -177,10 +177,11 @@ var create_sitter_and_request_photo = function (bubble_id, thoughtbubble_image) 
     console.log(req_loc);
     request(req_loc, function (error, response, body) {
         if (!error) {
+            var time = moment().format('YYYY-MM-DD-HH-mm-ss');
             var new_sitter_id = bubbles[bubble_id].sitter_id = parseInt(body, 10);
             console.log('result of new_haworth_sitter at ' + new_sitter_id);
             console.log('asking for a photo!');
-            request('http://'+config.camera_ip+'/takephoto?eid='+new_sitter_id+'&tb_id='+bubble_id, function (error, response, body) {
+            request('http://'+config.camera_ip+'/takephoto?eid='+new_sitter_id+'&tb_id='+bubble_id+'&time='+time, function (error, response, body) {
                 if (!error) {
                     console.log("Got from camera: " + response.statusCode) // 200
                 }
