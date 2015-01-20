@@ -37,7 +37,7 @@ var request_to_display_latest_sitter = function (eid, file_to_put) {
         if (!error) {
             console.log("Updated haworth sitter picture.");
 
-            request('http://10.0.1.16:3000/displaylatestsitter', function (error, response, body) {
+            request('http://10.0.1.5:3000/displaylatestsitter', function (error, response, body) {
                 if (!error) {
                     console.log("Requested latest sitter.");
                 }
