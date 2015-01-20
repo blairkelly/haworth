@@ -6,6 +6,13 @@ var moment = module.parent.exports.moment;
 var request = module.parent.exports.request;
 var s3client = module.parent.exports.s3client;
 
+var knox = require('knox');
+var s3client = knox.createClient({
+    key: 'AKIAIPG35O4JUXEHP5GQ',
+    secret: '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',
+    bucket: 'blairkelly',
+});
+
 var retrieve_latest_filename = function (callback) {
     request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
         if (!error) {
