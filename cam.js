@@ -30,12 +30,6 @@ var ftp = require('ftp');
 var ftp_ready = false;
 var ftpclient = new ftp();
 ftpclient.on('ready', function() {
-    //ftpclient.list(function (err, list) {
-    //    if (err) throw err;
-    //    console.dir(list);
-    //    ftpclient.end();
-    //
-    //});
     console.log("FTP IS READY");
     ftp_ready = true;
 });
