@@ -118,6 +118,7 @@ var upload_to_s3 = function (eid, file_to_put) {
 var cmds = [];
 var queue_empty = true;
 
+/*
 function takeWebcamShot(params) {
     var req = params.req;
     var res = params.res;
@@ -154,6 +155,7 @@ function takeWebcamShot(params) {
         }, 22);
     });
 }
+*/
 
 function takeGphotoShot(params) {
     var req = params.req;
@@ -184,8 +186,8 @@ function takeGphotoShot(params) {
         params.callback();
         setTimeout(function () {
             taking_photo = false;
-            console.log('calling upload_to_s3');
-            upload_to_s3(params.eid, filename);
+            console.log('calling upload_to_ftp');
+            upload_to_ftp(params.eid, filename);
         }, 22);
     });
 }
