@@ -4,13 +4,7 @@ var io = module.parent.exports.io;
 var fs = module.parent.exports.fs;
 var moment = module.parent.exports.moment;
 var request = module.parent.exports.request;
-
-var knox = require('knox');
-var s3client = knox.createClient({
-    key: 'AKIAIPG35O4JUXEHP5GQ',
-    secret: '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',
-    bucket: 'blairkelly',
-});
+var s3client = module.parent.exports.s3client;
 
 var retrieve_latest_filename = function (callback) {
     request('http://www.blairkelly.ca/get_latest_haworth_sitter', function (error, response, body) {
@@ -31,7 +25,7 @@ var retrieve_latest_filename = function (callback) {
 
 var upload_to_s3 = function (file_to_put) {
     console.log("attempting to upload: " + file_to_put);
-    var file_to_send_path = '../../public/images/sitters/' + file_to_put;
+    var file_to_send_path = 'tests3.jpg';
     var target_image_path = '/images/haworth/' + file_to_put;
 
     var s3_upload = s3client.putFile(file_to_send_path, target_image_path, function (err, s3upres) {
