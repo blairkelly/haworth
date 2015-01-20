@@ -149,8 +149,8 @@ function takeWebcamShot(params) {
         console.log('done');
         params.callback();
         setTimeout(function () {
-            console.log('calling upload_to_s3');
-            upload_to_s3(params.eid, filename);
+            console.log('calling upload_to_ftp');
+            upload_to_ftp(params.eid, filename);
         }, 22);
     });
 }
