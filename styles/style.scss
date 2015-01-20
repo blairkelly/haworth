@@ -157,7 +157,7 @@ body {
 
     &.video1 {
         top: 0;
-        height: 35%;
+        height: 250px;
 
         background: -moz-linear-gradient(top,  rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
         background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,1)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
@@ -170,8 +170,8 @@ body {
     }
 
     &.video2 {
-        bottom: 0;
-        height: 45%;
+        bottom: 76px;
+        height: 100px;
 
         background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
         background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
