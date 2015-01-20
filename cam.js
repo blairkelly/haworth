@@ -28,6 +28,8 @@ server.listen(3300);
 
 var ftp = require('ftp');
 
+var taking_photo = false;
+
 var request_to_display_latest_sitter = function (eid, file_to_put) {
     var req_loc = 'http://www.blairkelly.ca/update_haworth_sitter?sitter_id='+eid+'&picture='+file_to_put;
     console.log(req_loc);

@@ -23,6 +23,30 @@ var retrieve_latest_filename = function (callback) {
     });
 }
 
+var upload_to_s3 = function (file_to_put) {
+    console.log("attempting to upload: " + file_to_put);
+    var file_to_send_path = '../../public/images/sitters/' + file_to_put;
+    var target_image_path = '/images/haworth/' + file_to_put;
+
+    var s3_upload = s3client.putFile(file_to_send_path, target_image_path, function (err, s3upres) {
+        if (err) {
+            console.error("s3 put error...");
+            console.error(err);
+        }
+        if (s3upres) {
+            if (s3upres.statusCode == 200) {
+                console.log('finished uploading ' + file_to_put + ' to s3!');
+            }
+            else {
+                console.log(s3upres.statusCode);
+            }
+        }
+        else {
+            console.log('s3upres is empty');
+        }
+    });
+}
+
 app.get('/displaylatestsitter', function (req, res) {
     retrieve_latest_filename(function (filename) {
         if (filename) {
@@ -30,6 +54,7 @@ app.get('/displaylatestsitter', function (req, res) {
             emit_to_latest(function (socket) {
                 socket.emit('setimg', filename);
             });
+            upload_to_s3(filename);
             return res.send(200);
         }
         else {

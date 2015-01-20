@@ -7,8 +7,12 @@ var sport = scoms.connectedport;
 var moment = module.parent.exports.moment;
 var request = module.parent.exports.request;
 
-//var thoughtbubble_showing = false;
-//var current_thoughtbubble = '';
+var knox = require('knox');
+var s3client = knox.createClient({
+    key: 'AKIAIPG35O4JUXEHP5GQ',
+    secret: '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',
+    bucket: 'blairkelly',
+});
 
 var butt_on_delay = 210;
 var butt_gone_delay = 240;
