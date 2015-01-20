@@ -4,7 +4,6 @@ var io = module.parent.exports.io;
 var fs = module.parent.exports.fs;
 var moment = module.parent.exports.moment;
 var request = module.parent.exports.request;
-var s3client = module.parent.exports.s3client;
 
 var knox = require('knox');
 var s3client = knox.createClient({
