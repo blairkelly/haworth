@@ -170,11 +170,11 @@ var update_sitter_sit_time = function (bubble_id) {
     }
 }
 var create_sitter_and_request_photo = function (bubble_id, thoughtbubble_image) {
-    var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+thoughtbubble_image;
+    var time = moment().format('YYYY-MM-DD-HH-mm-ss');
+    var req_loc = 'http://www.blairkelly.ca/new_haworth_sitter?seat_id='+bubble_id+'&img='+thoughtbubble_image+'&time='+time;
     console.log(req_loc);
     request(req_loc, function (error, response, body) {
         if (!error) {
-            var time = moment().format('YYYY-MM-DD-HH-mm-ss');
             var new_sitter_id = bubbles[bubble_id].sitter_id = parseInt(body, 10);
             console.log('result of new_haworth_sitter at ' + new_sitter_id);
             console.log('asking for a photo!');
