@@ -1,0 +1,14 @@
+extends ../../layouts/main
+
+block body
+    .surface.latest.thought_bubble.buffer.showing(style="background-image: url('http://blairkelly.ca/haworth-image/#{imgdata.picture}');")
+        .note buffer
+    .surface.latest.thought_bubble.main.showing(style="background-image: url('http://blairkelly.ca/haworth-image/#{imgdata.picture}');")
+        .note main
+
+block pagespecific_scripts
+    script(src="/scripts/moment.js")
+    script(type="text/javascript")
+        include scripts.js
+    script(type="text/javascript")
+        include random.js

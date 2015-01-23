@@ -23,6 +23,23 @@ var retrieve_latest_filename = function (callback) {
     });
 }
 
+var get_random = function (callback) {
+    request('http://www.blairkelly.ca/get_random_haworth_sitter', function (error, response, body) {
+        if (!error) {
+            var body_json;
+            try {
+                body_json = JSON.parse(body);
+            } catch (err) {
+                console.log(body, err);
+                console.log("Parse failed.");
+                callback(null);
+                return null;
+            }
+            callback(body_json);
+        }
+    });
+}
+
 var upload_to_s3 = function (file_to_put) {
     console.log("attempting to upload: " + file_to_put);
     var file_to_send_path = '/Users/blairkelly/Sites/haworth/public/images/sitters/' + file_to_put;
@@ -61,7 +78,6 @@ app.get('/displaylatestsitter', function (req, res) {
             return res.send(404);
         }
     });
-    
 });
 
 app.get('/latest', function (req, res) {
@@ -86,6 +102,19 @@ app.get('/latest_sitter/:img', function (req, res) {
             res.type('jpg');
             s3res.pipe(res);
         }
+    });
+});
+
+app.get('/random', function (req, res) {
+    get_random(function (imgdata) {
+        res.locals.imgdata = imgdata;
+        res.render('latest/random.jade');
+    });
+});
+
+app.get('/get_random_json', function (req, res) {
+    get_random(function (imgdata) {
+        res.send(imgdata);
     });
 });
 

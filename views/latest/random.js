@@ -14,9 +14,12 @@ var hide_thoughtbubbles = function (params) {
     }, img_transition_time);
 }
 
-var load_thoughtbubble = function (params) {
-    //var imgpath = '/latest_sitter/' + params.imgname;
-    var imgpath = '/images/sitters/' + params.imgname;
+var load_image = function (imgdata, callback) {
+    var origin_path = "http://blairkelly.ca/haworth-image/"
+    if (imgdata.touchup) {
+        origin_path+='touched-up/';
+    }
+    var imgpath = origin_path + imgdata.picture;
     console.log(imgpath);
 
     $('.thought_bubble.main').removeClass('transitions showing');
@@ -31,17 +34,39 @@ var load_thoughtbubble = function (params) {
             setTimeout(function () {
                 $('.thought_bubble.buffer').css('background-image', 'url('+imgpath+')').addClass('showing');
                 timg.remove();
-                params.callback();
+                callback();
             }, img_transition_time);
         });
     }, 22);
 }
 
-setInterval(function () {
-    if (next_cmd_ok && (cmds.length > 0)) {
-        next_cmd_ok = false;
-        cmds[0].func(cmds[0].params);
-        cmds.shift();
-    }
-}, 55);
+var countdown_to_show_random = function () {
+    var time = moment();
+    var hour = parseInt(time.format("H"), 10);
+    var min = parseInt(time.format("m"), 10)
 
+    if (hour < 9) {
+        return console.log("too early");
+    }
+    else if (hour >= 19 && min >= 30) {
+        return console.log("too late");
+    }
+
+    setTimeout(function () {
+        $.ajax({
+            type: "GET",
+            url: "/get_random_json",
+            success: function (data) {
+                console.log(data);
+                load_image(data, function () {
+                    countdown_to_show_random();
+                });
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }, 15000);
+}
+
+countdown_to_show_random();
