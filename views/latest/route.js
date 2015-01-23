@@ -80,12 +80,14 @@ app.get('/displaylatestsitter', function (req, res) {
     });
 });
 
+/*
 app.get('/latest', function (req, res) {
     retrieve_latest_filename(function (filename) {
         res.locals.latest_filename = filename;
         res.render('latest/latest.jade');
     });
 });
+*/
 
 app.get('/latest_sitter/:img', function (req, res) {
     console.log(req.params.img);
@@ -105,7 +107,7 @@ app.get('/latest_sitter/:img', function (req, res) {
     });
 });
 
-app.get('/random', function (req, res) {
+app.get('/latest', function (req, res) {  //used to be /random
     get_random(function (imgdata) {
         res.locals.imgdata = imgdata;
         res.render('latest/random.jade');
