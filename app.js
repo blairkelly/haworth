@@ -35,9 +35,9 @@ server.listen(process.env.PORT || 3000);
 
 var knox = require('knox');
 var s3client = knox.createClient({
-    key: 'AKIAIPG35O4JUXEHP5GQ',
-    secret: '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',
-    bucket: 'blairkelly',
+    key: 'deleted_my_s3_bucket',
+    secret: 'deleted_my_s3_bucket',
+    bucket: 'deleted_my_s3_bucket',
 });
 
 module.exports = {
